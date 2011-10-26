@@ -1,14 +1,17 @@
+Michael Kohler - 11-108-289
+Lukas Diener - 11-123-213
+
 9: Instanzierung eines neuen A-Objekts a1 (a == 3)
 10: Instanzierung eines neuen A-Objekts a2 (a == 3)
-11: Erhöhung a von a1 (a von a1 == 4)
+11: Erhoehung a von a1 (a von a1 == 4)
 13: a2 wird zum Wert von a1 (a1 ist 4 => a2 == 4)
-14: Erhöhung a von a2 (a von a2 == 5)
+14: Erhoehung a von a2 (a von a2 == 5)
 17: String s1 wird zu "ROCK" initialisiert
-18: String s2 nimmt bei der Initialieserung den Wert von s1 (== ROCK)
+18: String s2 nimmt bei der Initialisierung den Wert von s1 (== "ROCK")
 19: s2 wird klein geschrieben (s2 ist "rock")
 22: int j wird mit 1 initialisiert
 23: i wird initialisiert und bekommt den Wert von j (d.h. i == 1)
-24: j wird erhöht (j ist nun 2)
+24: j wird erhoeht (j ist nun 2)
 
 Output:
 4/3
