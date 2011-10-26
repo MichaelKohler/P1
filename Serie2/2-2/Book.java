@@ -97,7 +97,7 @@ public class Book{
 	}
 
 	/** Converts the String object s into a Date object */
-	public Date stringToDate(String s) throws ParseException{
+	private Date stringToDate(String s) throws ParseException{
 		SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);
 		return fmt.parse(s);
 	}

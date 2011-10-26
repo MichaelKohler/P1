@@ -3,7 +3,7 @@
 %%Title: Enscript Output
 %%For: Michael
 %%Creator: GNU Enscript 1.6.5.2
-%%CreationDate: Thu Oct 27 00:48:24 2011
+%%CreationDate: Thu Oct 27 01:16:55 2011
 %%Orientation: Landscape
 %%Pages: (atend)
 %%DocumentMedia: Letter 612 792 0 () ()
@@ -508,8 +508,8 @@ _S
 /ftail (Book.java) def
 % User defined strings:
 /pagenumstr (1) def
-/moddatestr (10/26/11) def
-/modtimestr (13:39:22) def
+/moddatestr (10/27/11) def
+/modtimestr (01:15:34) def
 /user_header_p false def
 /user_footer_p false def
 %%EndPageSetup
@@ -1191,15 +1191,15 @@ do_header
 (        ) s
 /Courier-Bold 7 7 SUF
 441 194 M
-(public) s
+(private) s
 /F-gs-font 7 7 SF
-466.2 194 M
+470.4 194 M
 ( Date stringToDate\(String s\) ) s
 /Courier-Bold 7 7 SUF
-588 194 M
+592.2 194 M
 (throws) s
 /F-gs-font 7 7 SF
-613.2 194 M
+617.4 194 M
 ( ParseException{) s
 386.4 186 M (101:) s
 407.4 186 M
@@ -1238,8 +1238,8 @@ _S
 /ftail (BookTest.java) def
 % User defined strings:
 /pagenumstr (1) def
-/moddatestr (10/26/11) def
-/modtimestr (13:39:13) def
+/moddatestr (10/27/11) def
+/modtimestr (01:16:13) def
 /user_header_p false def
 /user_footer_p false def
 %%EndPageSetup
@@ -1526,532 +1526,532 @@ do_header
 ( shouldReturnBookString\(\) {) s
 18.6 162 M (42:) s
 35.4 162 M
-(        ) s
-/Courier-Oblique 7 7 SUF
-69 162 M
-(// this method also tests dateToString\(\)) s
-/F-gs-font 7 7 SF
-18.6 154 M (43:) s
-/Courier-Oblique 7 7 SUF
-/F-gs-font 7 7 SF
-35.4 154 M
 (        String bookString = _testBook.toString\(\);) s
-18.6 146 M (44:) s
-35.4 146 M
+18.6 154 M (43:) s
+35.4 154 M
 (        String correctOutput = ) s
 /Courier-Bold 7 7 SUF
-165.6 146 M
+165.6 154 M
 ("3, TestBook, TestAuthor, 31.01.2005") s
 /F-gs-font 7 7 SF
-321 146 M
+321 154 M
 (;) s
-18.6 138 M (45:) s
-35.4 138 M
+18.6 146 M (44:) s
+35.4 146 M
 (        ) s
 /Courier-Bold 7 7 SUF
-69 138 M
+69 146 M
 (if) s
 /F-gs-font 7 7 SF
-77.4 138 M
+77.4 146 M
 ( \(!bookString.equals\(correctOutput\)\)) s
-18.6 130 M (46:) s
-35.4 130 M
+18.6 138 M (45:) s
+35.4 138 M
 (            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-161.4 130 M
+161.4 138 M
 (false) s
 /F-gs-font 7 7 SF
-182.4 130 M
+182.4 138 M
 (;) s
-18.6 122 M (47:) s
-35.4 122 M
+18.6 130 M (46:) s
+35.4 130 M
 (    }) s
+18.6 122 M (47:) s
 18.6 114 M (48:) s
-18.6 106 M (49:) s
-35.4 106 M
+35.4 114 M
 (    ) s
 /Courier-Bold 7 7 SUF
-52.2 106 M
+52.2 114 M
 (public) s
 /F-gs-font 7 7 SF
-77.4 106 M
+77.4 114 M
 ( ) s
 /Courier-Bold 7 7 SUF
-81.6 106 M
+81.6 114 M
 (static) s
 /F-gs-font 7 7 SF
-106.8 106 M
+106.8 114 M
 ( ) s
 /Courier-Bold 7 7 SUF
-111 106 M
+111 114 M
 (void) s
 /F-gs-font 7 7 SF
-127.8 106 M
+127.8 114 M
 ( shouldReturnId\(\) {) s
+18.6 106 M (49:) s
+35.4 106 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 106 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 106 M
+( id = _testBook.getId\(\);) s
 18.6 98 M (50:) s
 35.4 98 M
 (        ) s
 /Courier-Bold 7 7 SUF
 69 98 M
-(int) s
-/F-gs-font 7 7 SF
-81.6 98 M
-( id = _testBook.getId\(\);) s
-18.6 90 M (51:) s
-35.4 90 M
-(        ) s
-/Courier-Bold 7 7 SUF
-69 90 M
 (if) s
 /F-gs-font 7 7 SF
-77.4 90 M
+77.4 98 M
 ( \(id != 3\)) s
-18.6 82 M (52:) s
-35.4 82 M
+18.6 90 M (51:) s
+35.4 90 M
 (            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-161.4 82 M
+161.4 90 M
 (false) s
 /F-gs-font 7 7 SF
-182.4 82 M
+182.4 90 M
 (;) s
-18.6 74 M (53:) s
-35.4 74 M
+18.6 82 M (52:) s
+35.4 82 M
 (    }) s
+18.6 74 M (53:) s
 18.6 66 M (54:) s
-18.6 58 M (55:) s
-35.4 58 M
+35.4 66 M
 (    ) s
 /Courier-Bold 7 7 SUF
-52.2 58 M
+52.2 66 M
 (public) s
 /F-gs-font 7 7 SF
-77.4 58 M
+77.4 66 M
 ( ) s
 /Courier-Bold 7 7 SUF
-81.6 58 M
+81.6 66 M
 (static) s
 /F-gs-font 7 7 SF
-106.8 58 M
+106.8 66 M
 ( ) s
 /Courier-Bold 7 7 SUF
-111 58 M
+111 66 M
 (void) s
 /F-gs-font 7 7 SF
-127.8 58 M
+127.8 66 M
 ( shouldSetId\(\) {) s
+18.6 58 M (55:) s
+35.4 58 M
+(        _testBook.setId\(500\);) s
 18.6 50 M (56:) s
 35.4 50 M
-(        _testBook.setId\(500\);) s
+(        ) s
+/Courier-Bold 7 7 SUF
+69 50 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 50 M
+( newid = _testBook.getId\(\);) s
 18.6 42 M (57:) s
 35.4 42 M
 (        ) s
 /Courier-Bold 7 7 SUF
 69 42 M
-(int) s
+(if) s
 /F-gs-font 7 7 SF
-81.6 42 M
-( newid = _testBook.getId\(\);) s
+77.4 42 M
+( \(newid != 500\)) s
 18.6 34 M (58:) s
 35.4 34 M
-(        ) s
+(            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-69 34 M
-(if) s
+161.4 34 M
+(false) s
 /F-gs-font 7 7 SF
-77.4 34 M
-( \(newid != 500\)) s
+182.4 34 M
+(;) s
 18.6 26 M (59:) s
 35.4 26 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-161.4 26 M
-(false) s
-/F-gs-font 7 7 SF
-182.4 26 M
-(;) s
-18.6 18 M (60:) s
-35.4 18 M
 (    }) s
+18.6 18 M (60:) s
 18.6 10 M (61:) s
+35.4 10 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 10 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 10 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 10 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 10 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 10 M
+(void) s
+/F-gs-font 7 7 SF
+127.8 10 M
+( shouldReturnTitle\(\) {) s
 18.6 2 M (62:) s
 35.4 2 M
-(    ) s
-/Courier-Bold 7 7 SUF
-52.2 2 M
-(public) s
-/F-gs-font 7 7 SF
-77.4 2 M
-( ) s
-/Courier-Bold 7 7 SUF
-81.6 2 M
-(static) s
-/F-gs-font 7 7 SF
-106.8 2 M
-( ) s
-/Courier-Bold 7 7 SUF
-111 2 M
-(void) s
-/F-gs-font 7 7 SF
-127.8 2 M
-( shouldReturnTitle\(\) {) s
+(        String title = _testBook.getTitle\(\);) s
 390.6 490 M (63:) s
 407.4 490 M
-(        String title = _testBook.getTitle\(\);) s
-390.6 482 M (64:) s
-407.4 482 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 482 M
+441 490 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 482 M
+449.4 490 M
 ( \(!title.equals\() s
 /Courier-Bold 7 7 SUF
-516.6 482 M
+516.6 490 M
 ("TestBook") s
 /F-gs-font 7 7 SF
-558.6 482 M
+558.6 490 M
 (\)\)) s
+390.6 482 M (64:) s
+407.4 482 M
+(            _allTestsPassed = ) s
+/Courier-Bold 7 7 SUF
+533.4 482 M
+(false) s
+/F-gs-font 7 7 SF
+554.4 482 M
+(;) s
 390.6 474 M (65:) s
 407.4 474 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-533.4 474 M
-(false) s
-/F-gs-font 7 7 SF
-554.4 474 M
-(;) s
-390.6 466 M (66:) s
-407.4 466 M
 (    }) s
+390.6 466 M (66:) s
 390.6 458 M (67:) s
+407.4 458 M
+(    ) s
+/Courier-Bold 7 7 SUF
+424.2 458 M
+(public) s
+/F-gs-font 7 7 SF
+449.4 458 M
+( ) s
+/Courier-Bold 7 7 SUF
+453.6 458 M
+(static) s
+/F-gs-font 7 7 SF
+478.8 458 M
+( ) s
+/Courier-Bold 7 7 SUF
+483 458 M
+(void) s
+/F-gs-font 7 7 SF
+499.8 458 M
+( shouldSetTitle\(\) {) s
 390.6 450 M (68:) s
 407.4 450 M
-(    ) s
-/Courier-Bold 7 7 SUF
-424.2 450 M
-(public) s
-/F-gs-font 7 7 SF
-449.4 450 M
-( ) s
-/Courier-Bold 7 7 SUF
-453.6 450 M
-(static) s
-/F-gs-font 7 7 SF
-478.8 450 M
-( ) s
-/Courier-Bold 7 7 SUF
-483 450 M
-(void) s
-/F-gs-font 7 7 SF
-499.8 450 M
-( shouldSetTitle\(\) {) s
-390.6 442 M (69:) s
-407.4 442 M
 (        _testBook.setTitle\() s
 /Courier-Bold 7 7 SUF
-520.8 442 M
+520.8 450 M
 ("NewTitle") s
 /F-gs-font 7 7 SF
-562.8 442 M
+562.8 450 M
 (\);) s
+390.6 442 M (69:) s
+407.4 442 M
+(        String newTitle = _testBook.getTitle\(\);) s
 390.6 434 M (70:) s
 407.4 434 M
-(        String newTitle = _testBook.getTitle\(\);) s
-390.6 426 M (71:) s
-407.4 426 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 426 M
+441 434 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 426 M
+449.4 434 M
 ( \(!newTitle.equals\() s
 /Courier-Bold 7 7 SUF
-529.2 426 M
+529.2 434 M
 ("NewTitle") s
 /F-gs-font 7 7 SF
-571.2 426 M
+571.2 434 M
 (\)\)) s
+390.6 426 M (71:) s
+407.4 426 M
+(            _allTestsPassed = ) s
+/Courier-Bold 7 7 SUF
+533.4 426 M
+(false) s
+/F-gs-font 7 7 SF
+554.4 426 M
+(;) s
 390.6 418 M (72:) s
 407.4 418 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-533.4 418 M
-(false) s
-/F-gs-font 7 7 SF
-554.4 418 M
-(;) s
-390.6 410 M (73:) s
-407.4 410 M
 (    }) s
+390.6 410 M (73:) s
 390.6 402 M (74:) s
+407.4 402 M
+(    ) s
+/Courier-Bold 7 7 SUF
+424.2 402 M
+(public) s
+/F-gs-font 7 7 SF
+449.4 402 M
+( ) s
+/Courier-Bold 7 7 SUF
+453.6 402 M
+(static) s
+/F-gs-font 7 7 SF
+478.8 402 M
+( ) s
+/Courier-Bold 7 7 SUF
+483 402 M
+(void) s
+/F-gs-font 7 7 SF
+499.8 402 M
+( shouldReturnAuthor\(\) {) s
 390.6 394 M (75:) s
 407.4 394 M
-(    ) s
-/Courier-Bold 7 7 SUF
-424.2 394 M
-(public) s
-/F-gs-font 7 7 SF
-449.4 394 M
-( ) s
-/Courier-Bold 7 7 SUF
-453.6 394 M
-(static) s
-/F-gs-font 7 7 SF
-478.8 394 M
-( ) s
-/Courier-Bold 7 7 SUF
-483 394 M
-(void) s
-/F-gs-font 7 7 SF
-499.8 394 M
-( shouldReturnAuthor\(\) {) s
+(        String author = _testBook.getAuthor\(\);) s
 390.6 386 M (76:) s
 407.4 386 M
-(        String author = _testBook.getAuthor\(\);) s
-390.6 378 M (77:) s
-407.4 378 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 378 M
+441 386 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 378 M
+449.4 386 M
 ( \(!author.equals\() s
 /Courier-Bold 7 7 SUF
-520.8 378 M
+520.8 386 M
 ("TestAuthor") s
 /F-gs-font 7 7 SF
-571.2 378 M
+571.2 386 M
 (\)\)) s
+390.6 378 M (77:) s
+407.4 378 M
+(            _allTestsPassed = ) s
+/Courier-Bold 7 7 SUF
+533.4 378 M
+(false) s
+/F-gs-font 7 7 SF
+554.4 378 M
+(;) s
 390.6 370 M (78:) s
 407.4 370 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-533.4 370 M
-(false) s
-/F-gs-font 7 7 SF
-554.4 370 M
-(;) s
-390.6 362 M (79:) s
-407.4 362 M
 (    }) s
+390.6 362 M (79:) s
 390.6 354 M (80:) s
+407.4 354 M
+(    ) s
+/Courier-Bold 7 7 SUF
+424.2 354 M
+(public) s
+/F-gs-font 7 7 SF
+449.4 354 M
+( ) s
+/Courier-Bold 7 7 SUF
+453.6 354 M
+(static) s
+/F-gs-font 7 7 SF
+478.8 354 M
+( ) s
+/Courier-Bold 7 7 SUF
+483 354 M
+(void) s
+/F-gs-font 7 7 SF
+499.8 354 M
+( shouldSetAuthor\(\) {) s
 390.6 346 M (81:) s
 407.4 346 M
-(    ) s
-/Courier-Bold 7 7 SUF
-424.2 346 M
-(public) s
-/F-gs-font 7 7 SF
-449.4 346 M
-( ) s
-/Courier-Bold 7 7 SUF
-453.6 346 M
-(static) s
-/F-gs-font 7 7 SF
-478.8 346 M
-( ) s
-/Courier-Bold 7 7 SUF
-483 346 M
-(void) s
-/F-gs-font 7 7 SF
-499.8 346 M
-( shouldSetAuthor\(\) {) s
-390.6 338 M (82:) s
-407.4 338 M
 (        _testBook.setAuthor\() s
 /Courier-Bold 7 7 SUF
-525 338 M
+525 346 M
 ("NewAuthor") s
 /F-gs-font 7 7 SF
-571.2 338 M
+571.2 346 M
 (\);) s
+390.6 338 M (82:) s
+407.4 338 M
+(        String newAuthor = _testBook.getAuthor\(\);) s
 390.6 330 M (83:) s
 407.4 330 M
-(        String newAuthor = _testBook.getAuthor\(\);) s
-390.6 322 M (84:) s
-407.4 322 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 322 M
+441 330 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 322 M
+449.4 330 M
 ( \(!newAuthor.equals\() s
 /Courier-Bold 7 7 SUF
-533.4 322 M
+533.4 330 M
 ("NewAuthor") s
 /F-gs-font 7 7 SF
-579.6 322 M
+579.6 330 M
 (\)\)) s
+390.6 322 M (84:) s
+407.4 322 M
+(            _allTestsPassed = ) s
+/Courier-Bold 7 7 SUF
+533.4 322 M
+(false) s
+/F-gs-font 7 7 SF
+554.4 322 M
+(;) s
 390.6 314 M (85:) s
 407.4 314 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-533.4 314 M
-(false) s
-/F-gs-font 7 7 SF
-554.4 314 M
-(;) s
-390.6 306 M (86:) s
-407.4 306 M
 (    }) s
+390.6 306 M (86:) s
 390.6 298 M (87:) s
+407.4 298 M
+(    ) s
+/Courier-Bold 7 7 SUF
+424.2 298 M
+(public) s
+/F-gs-font 7 7 SF
+449.4 298 M
+( ) s
+/Courier-Bold 7 7 SUF
+453.6 298 M
+(static) s
+/F-gs-font 7 7 SF
+478.8 298 M
+( ) s
+/Courier-Bold 7 7 SUF
+483 298 M
+(void) s
+/F-gs-font 7 7 SF
+499.8 298 M
+( shouldReturnDate\(\) {) s
 390.6 290 M (88:) s
 407.4 290 M
-(    ) s
-/Courier-Bold 7 7 SUF
-424.2 290 M
-(public) s
-/F-gs-font 7 7 SF
-449.4 290 M
-( ) s
-/Courier-Bold 7 7 SUF
-453.6 290 M
-(static) s
-/F-gs-font 7 7 SF
-478.8 290 M
-( ) s
-/Courier-Bold 7 7 SUF
-483 290 M
-(void) s
-/F-gs-font 7 7 SF
-499.8 290 M
-( shouldReturnDate\(\) {) s
+(        Date date = _testBook.getDateOfPublication\(\);) s
 390.6 282 M (89:) s
 407.4 282 M
-(        Date date = _testBook.getDateOfPublication\(\);) s
+(        ) s
+/Courier-Bold 7 7 SUF
+441 282 M
+(if) s
+/F-gs-font 7 7 SF
+449.4 282 M
+( \(date.getTime\(\) != 1107202550434L\)   ) s
 390.6 274 M (90:) s
 407.4 274 M
-(        ) s
+(            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-441 274 M
-(if) s
+533.4 274 M
+(false) s
 /F-gs-font 7 7 SF
-449.4 274 M
-( \(date.getTime\(\) != 1107202550434L\)   ) s
+554.4 274 M
+(;) s
 390.6 266 M (91:) s
 407.4 266 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-533.4 266 M
-(false) s
-/F-gs-font 7 7 SF
-554.4 266 M
-(;) s
-390.6 258 M (92:) s
-407.4 258 M
 (    }) s
+390.6 258 M (92:) s
 390.6 250 M (93:) s
+407.4 250 M
+(    ) s
+/Courier-Bold 7 7 SUF
+424.2 250 M
+(public) s
+/F-gs-font 7 7 SF
+449.4 250 M
+( ) s
+/Courier-Bold 7 7 SUF
+453.6 250 M
+(static) s
+/F-gs-font 7 7 SF
+478.8 250 M
+( ) s
+/Courier-Bold 7 7 SUF
+483 250 M
+(void) s
+/F-gs-font 7 7 SF
+499.8 250 M
+( shouldSetDate\(\) {) s
 390.6 242 M (94:) s
 407.4 242 M
-(    ) s
-/Courier-Bold 7 7 SUF
-424.2 242 M
-(public) s
-/F-gs-font 7 7 SF
-449.4 242 M
-( ) s
-/Courier-Bold 7 7 SUF
-453.6 242 M
-(static) s
-/F-gs-font 7 7 SF
-478.8 242 M
-( ) s
-/Courier-Bold 7 7 SUF
-483 242 M
-(void) s
-/F-gs-font 7 7 SF
-499.8 242 M
-( shouldSetDate\(\) {) s
-390.6 234 M (95:) s
-407.4 234 M
 (        Date newDateToSet = ) s
 /Courier-Bold 7 7 SUF
-525 234 M
+525 242 M
 (new) s
 /F-gs-font 7 7 SF
-537.6 234 M
+537.6 242 M
 ( Date\(1107202550435L\);) s
+390.6 234 M (95:) s
+407.4 234 M
+(        _testBook.setDateOfPublication\(newDateToSet\);) s
 390.6 226 M (96:) s
 407.4 226 M
-(        _testBook.setDateOfPublication\(newDateToSet\);) s
+(        Date newDate = _testBook.getDateOfPublication\(\);) s
 390.6 218 M (97:) s
 407.4 218 M
-(        Date newDate = _testBook.getDateOfPublication\(\);) s
-390.6 210 M (98:) s
-407.4 210 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 210 M
+441 218 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 210 M
+449.4 218 M
 ( \(newDate.getTime\(\) != 1107202550435L\)        ) s
-390.6 202 M (99:) s
-407.4 202 M
+390.6 210 M (98:) s
+407.4 210 M
 (            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-533.4 202 M
+533.4 210 M
 (false) s
 /F-gs-font 7 7 SF
-554.4 202 M
+554.4 210 M
 (;) s
-386.4 194 M (100:) s
-407.4 194 M
+390.6 202 M (99:) s
+407.4 202 M
 (    }) s
+386.4 194 M (100:) s
 386.4 186 M (101:) s
-386.4 178 M (102:) s
-407.4 178 M
+407.4 186 M
 (    ) s
 /Courier-Bold 7 7 SUF
-424.2 178 M
+424.2 186 M
 (public) s
 /F-gs-font 7 7 SF
-449.4 178 M
+449.4 186 M
 ( ) s
 /Courier-Bold 7 7 SUF
-453.6 178 M
+453.6 186 M
 (static) s
 /F-gs-font 7 7 SF
-478.8 178 M
+478.8 186 M
 ( ) s
 /Courier-Bold 7 7 SUF
-483 178 M
+483 186 M
 (void) s
 /F-gs-font 7 7 SF
-499.8 178 M
+499.8 186 M
 ( shouldCalcAge\(\) {) s
+386.4 178 M (102:) s
+407.4 178 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 178 M
+(// set date to one and a half years before today) s
+/F-gs-font 7 7 SF
 386.4 170 M (103:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
 407.4 170 M
 (        ) s
 /Courier-Oblique 7 7 SUF
 441 170 M
-(// set date to one and a half years before today) s
+(// => should return 1 year) s
 /F-gs-font 7 7 SF
 386.4 162 M (104:) s
 /Courier-Oblique 7 7 SUF
 /F-gs-font 7 7 SF
 407.4 162 M
-(        ) s
-/Courier-Oblique 7 7 SUF
-441 162 M
-(// => should return 1 year) s
-/F-gs-font 7 7 SF
-386.4 154 M (105:) s
-/Courier-Oblique 7 7 SUF
-/F-gs-font 7 7 SF
-407.4 154 M
 (        Date today = ) s
 /Courier-Bold 7 7 SUF
-495.6 154 M
+495.6 162 M
 (new) s
 /F-gs-font 7 7 SF
-508.2 154 M
+508.2 162 M
 ( Date\(\);) s
+386.4 154 M (105:) s
+407.4 154 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 154 M
+(long) s
+/F-gs-font 7 7 SF
+457.8 154 M
+( oneAHalfYears = Math.round\(\(365 * 24 * 60 * 60 * 1000\) * 1.5\);) s
 386.4 146 M (106:) s
 407.4 146 M
 (        ) s
@@ -2060,149 +2060,149 @@ do_header
 (long) s
 /F-gs-font 7 7 SF
 457.8 146 M
-( oneAHalfYears = Math.round\(\(365 * 24 * 60 * 60 * 1000\) * 1.5\);) s
+( correctTimestamp = today.getTime\(\) - oneAHalfYears;) s
 386.4 138 M (107:) s
 407.4 138 M
-(        ) s
-/Courier-Bold 7 7 SUF
-441 138 M
-(long) s
-/F-gs-font 7 7 SF
-457.8 138 M
-( correctTimestamp = today.getTime\(\) - oneAHalfYears;) s
-386.4 130 M (108:) s
-407.4 130 M
 (        Date oneAndaHalfYearsAgo = ) s
 /Courier-Bold 7 7 SUF
-554.4 130 M
+554.4 138 M
 (new) s
 /F-gs-font 7 7 SF
-567 130 M
+567 138 M
 ( Date\(correctTimestamp\);) s
+386.4 130 M (108:) s
+407.4 130 M
+(        _testBook.setDateOfPublication\(oneAndaHalfYearsAgo\);) s
 386.4 122 M (109:) s
 407.4 122 M
-(        _testBook.setDateOfPublication\(oneAndaHalfYearsAgo\);) s
+(        ) s
 386.4 114 M (110:) s
 407.4 114 M
 (        ) s
-386.4 106 M (111:) s
-407.4 106 M
-(        ) s
 /Courier-Bold 7 7 SUF
-441 106 M
+441 114 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 106 M
+449.4 114 M
 ( \(_testBook.age\(\) != 1\)       ) s
-386.4 98 M (112:) s
-407.4 98 M
+386.4 106 M (111:) s
+407.4 106 M
 (            _allTestsPassed = ) s
 /Courier-Bold 7 7 SUF
-533.4 98 M
+533.4 106 M
 (false) s
 /F-gs-font 7 7 SF
-554.4 98 M
+554.4 106 M
 (;) s
-386.4 90 M (113:) s
-407.4 90 M
+386.4 98 M (112:) s
+407.4 98 M
 (    }   ) s
+386.4 90 M (113:) s
 386.4 82 M (114:) s
-386.4 74 M (115:) s
-407.4 74 M
+407.4 82 M
 (    ) s
 /Courier-Bold 7 7 SUF
-424.2 74 M
+424.2 82 M
 (public) s
 /F-gs-font 7 7 SF
-449.4 74 M
+449.4 82 M
 ( ) s
 /Courier-Bold 7 7 SUF
-453.6 74 M
+453.6 82 M
 (static) s
 /F-gs-font 7 7 SF
-478.8 74 M
+478.8 82 M
 ( ) s
 /Courier-Bold 7 7 SUF
-483 74 M
+483 82 M
 (void) s
 /F-gs-font 7 7 SF
-499.8 74 M
+499.8 82 M
 ( shouldGetUserInput\(\) ) s
 /Courier-Bold 7 7 SUF
-592.2 74 M
+592.2 82 M
 (throws) s
 /F-gs-font 7 7 SF
-617.4 74 M
+617.4 82 M
 ( ParseException {) s
+386.4 74 M (115:) s
+407.4 74 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 74 M
+(// this method also tests dateToString\(\)) s
+/F-gs-font 7 7 SF
 386.4 66 M (116:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
 407.4 66 M
 (        ) s
 /Courier-Oblique 7 7 SUF
 441 66 M
-(// this method also tests dateToString\(\)) s
+(// needed input: 1, Title, Author, 01.01.2011   ) s
 /F-gs-font 7 7 SF
 386.4 58 M (117:) s
 /Courier-Oblique 7 7 SUF
 /F-gs-font 7 7 SF
 407.4 58 M
-(        ) s
-/Courier-Oblique 7 7 SUF
-441 58 M
-(// needed input: 1, Title, Author, 01.01.2011   ) s
-/F-gs-font 7 7 SF
-386.4 50 M (118:) s
-/Courier-Oblique 7 7 SUF
-/F-gs-font 7 7 SF
-407.4 50 M
 (        _testBook.input\(\);) s
-386.4 42 M (119:) s
-407.4 42 M
+386.4 50 M (118:) s
+407.4 50 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 42 M
+441 50 M
 (int) s
 /F-gs-font 7 7 SF
-453.6 42 M
+453.6 50 M
 ( id = _testBook.getId\(\);) s
+386.4 42 M (119:) s
+407.4 42 M
+(        String title = _testBook.getTitle\(\);) s
 386.4 34 M (120:) s
 407.4 34 M
-(        String title = _testBook.getTitle\(\);) s
+(        String author = _testBook.getAuthor\(\);) s
 386.4 26 M (121:) s
 407.4 26 M
-(        String author = _testBook.getAuthor\(\);) s
+(        Date date = _testBook.getDateOfPublication\(\);) s
 386.4 18 M (122:) s
 407.4 18 M
-(        Date date = _testBook.getDateOfPublication\(\);) s
-386.4 10 M (123:) s
-407.4 10 M
 (        ) s
 /Courier-Bold 7 7 SUF
-441 10 M
+441 18 M
 (if) s
 /F-gs-font 7 7 SF
-449.4 10 M
+449.4 18 M
 ( \(id != 1 || !title.equals\() s
 /Courier-Bold 7 7 SUF
-562.8 10 M
+562.8 18 M
 ("Title") s
 /F-gs-font 7 7 SF
-592.2 10 M
+592.2 18 M
 (\) || !author.equals\() s
 /Courier-Bold 7 7 SUF
-676.2 10 M
+676.2 18 M
 ("Author") s
 /F-gs-font 7 7 SF
-709.8 10 M
+709.8 18 M
 (\)) s
-386.4 2 M (124:) s
-407.4 2 M
+386.4 10 M (123:) s
+407.4 10 M
 (                || !_testBook.dateToString\(date\).equals\() s
 /Courier-Bold 7 7 SUF
-642.6 2 M
+642.6 10 M
 ("01.01.2011") s
 /F-gs-font 7 7 SF
-693 2 M
+693 10 M
 (\)\) {) s
+386.4 2 M (124:) s
+407.4 2 M
+(            _allTestsPassed = ) s
+/Courier-Bold 7 7 SUF
+533.4 2 M
+(false) s
+/F-gs-font 7 7 SF
+554.4 2 M
+(;) s
 _R
 S
 %%Page: (2) 3
@@ -2216,8 +2216,8 @@ _S
 /ftail (BookTest.java) def
 % User defined strings:
 /pagenumstr (2) def
-/moddatestr (10/26/11) def
-/modtimestr (13:39:13) def
+/moddatestr (10/27/11) def
+/modtimestr (01:16:13) def
 /user_header_p false def
 /user_footer_p false def
 %%EndPageSetup
@@ -2225,21 +2225,12 @@ column_lines
 do_header
 14.4 490 M (125:) s
 35.4 490 M
-(            _allTestsPassed = ) s
-/Courier-Bold 7 7 SUF
-161.4 490 M
-(false) s
-/F-gs-font 7 7 SF
-182.4 490 M
-(;) s
+(        }) s
 14.4 482 M (126:) s
 35.4 482 M
-(        }) s
+(    }) s
 14.4 474 M (127:) s
 35.4 474 M
-(    }) s
-14.4 466 M (128:) s
-35.4 466 M
 (}) s
 _R
 S

@@ -39,7 +39,6 @@ public class BookTest {
     }
 
     public static void shouldReturnBookString() {
-	// this method also tests dateToString()
 	String bookString = _testBook.toString();
 	String correctOutput = "3, TestBook, TestAuthor, 31.01.2005";
 	if (!bookString.equals(correctOutput))
