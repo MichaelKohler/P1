@@ -1,0 +1,42 @@
+P1:
+
+3-3
+*********
+
+1. Output:
+
+a=0, b=1
+a=1, b=1
+
+2.
+
+int i = 1;
+do {
+  System.out.println(i);
+  i++;
+} while (i < 10)
+
+for (int i = 1; i < 10, i++) {
+  System.out.println(i);
+}
+
+3. Problem:
+
+Wenn |int limit| kein Vielfaches von 3 ist, ist die Schleife endlos, da |counter != limit| immer |true| ist.
+
+Das Problem tritt erst beim Ausführen auf, da der Compiler keine Parameter-Sanity-Checks bezogen auf den Methoden-Body durchführt.
+
+Korrektur-Beispiel:
+
+public static String dreierReihe(int limit) {
+  String result = "";
+  
+  if (limit < 3) {
+    return "Limit zu klein (< 3)";
+  }
+  
+  for (int counter = 3; counter <= limit; counter += 3) {
+    result = result + counter + " ";
+  }
+  return result;
+}
