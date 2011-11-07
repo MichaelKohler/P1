@@ -1,0 +1,1840 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: Michael
+%%Creator: GNU Enscript 1.6.5.2
+%%CreationDate: Tue Nov  8 07:25:36 2011
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6.5 2
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6.5 2
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6.5 2
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 500 def
+/d_header_w 744 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 500 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (Book.java) def
+/fdir (.) def
+/ftail (Book.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/08/11) def
+/modtimestr (07:25:30) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 490 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 490 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 482 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 482 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 474 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 474 M
+( Aufgabe 3-2) s
+/F-gs-font 7 7 SF
+22.8 466 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 466 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 458 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 458 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 450 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 450 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 442 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 442 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 434 M (8:) s
+22.8 426 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 426 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 426 M
+( java.util.Date;) s
+18.6 418 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 418 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 418 M
+( java.text.*;) s
+18.6 410 M (11:) s
+/Courier-Bold 7 7 SUF
+35.4 410 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 410 M
+( java.util.Scanner;) s
+18.6 402 M (12:) s
+18.6 394 M (13:) s
+/Courier-Bold 7 7 SUF
+35.4 394 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 394 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 394 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 394 M
+( Book{) s
+18.6 386 M (14:) s
+35.4 386 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 386 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 386 M
+( ) s
+/Courier-Bold 7 7 SUF
+102.6 386 M
+(int) s
+/F-gs-font 7 7 SF
+115.2 386 M
+( id;) s
+18.6 378 M (15:) s
+35.4 378 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 378 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 378 M
+( String title;) s
+18.6 370 M (16:) s
+35.4 370 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 370 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 370 M
+( String author;) s
+18.6 362 M (17:) s
+35.4 362 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 362 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 362 M
+( Date dateOfPublication;) s
+18.6 354 M (18:) s
+35.4 354 M
+(        ) s
+18.6 346 M (19:) s
+35.4 346 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 346 M
+(/** added variable */) s
+/F-gs-font 7 7 SF
+18.6 338 M (20:) s
+35.4 338 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 338 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 338 M
+( ) s
+/Courier-Bold 7 7 SUF
+102.6 338 M
+(int) s
+/F-gs-font 7 7 SF
+115.2 338 M
+( price;) s
+18.6 330 M (21:) s
+18.6 322 M (22:) s
+35.4 322 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 322 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 322 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 322 M
+(static) s
+/F-gs-font 7 7 SF
+123.6 322 M
+( ) s
+/Courier-Bold 7 7 SUF
+127.8 322 M
+(final) s
+/F-gs-font 7 7 SF
+148.8 322 M
+( String DATE_FORMAT = ) s
+/Courier-Bold 7 7 SUF
+241.2 322 M
+("dd.MM.yyyy") s
+/F-gs-font 7 7 SF
+291.6 322 M
+(;) s
+18.6 314 M (23:) s
+18.6 306 M (24:) s
+35.4 306 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 306 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 306 M
+( Book\() s
+/Courier-Bold 7 7 SUF
+119.4 306 M
+(int) s
+/F-gs-font 7 7 SF
+132 306 M
+( tmpId, String tmpTitle, String tmpAuthor,) s
+18.6 298 M (25:) s
+35.4 298 M
+(                    Date tmpDateOfPubl, ) s
+/Courier-Bold 7 7 SUF
+203.4 298 M
+(int) s
+/F-gs-font 7 7 SF
+216 298 M
+( tmpPrice\){) s
+18.6 290 M (26:) s
+35.4 290 M
+(                id = tmpId;) s
+18.6 282 M (27:) s
+35.4 282 M
+(                title = tmpTitle;) s
+18.6 274 M (28:) s
+35.4 274 M
+(                author = tmpAuthor;) s
+18.6 266 M (29:) s
+35.4 266 M
+(                dateOfPublication = tmpDateOfPubl;) s
+18.6 258 M (30:) s
+35.4 258 M
+(                ) s
+18.6 250 M (31:) s
+35.4 250 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 250 M
+(/** added assignment */) s
+/F-gs-font 7 7 SF
+18.6 242 M (32:) s
+35.4 242 M
+(                price = Math.max\(0, tmpPrice\);) s
+18.6 234 M (33:) s
+35.4 234 M
+(        }) s
+18.6 226 M (34:) s
+18.6 218 M (35:) s
+35.4 218 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 218 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 218 M
+( Book\(\){) s
+18.6 210 M (36:) s
+35.4 210 M
+(                id = 0;) s
+18.6 202 M (37:) s
+35.4 202 M
+(                title = ) s
+/Courier-Bold 7 7 SUF
+136.2 202 M
+("") s
+/F-gs-font 7 7 SF
+144.6 202 M
+(;) s
+18.6 194 M (38:) s
+35.4 194 M
+(                author = ) s
+/Courier-Bold 7 7 SUF
+140.4 194 M
+("") s
+/F-gs-font 7 7 SF
+148.8 194 M
+(;) s
+18.6 186 M (39:) s
+35.4 186 M
+(                dateOfPublication = ) s
+/Courier-Bold 7 7 SUF
+186.6 186 M
+(new) s
+/F-gs-font 7 7 SF
+199.2 186 M
+( Date\(\);) s
+18.6 178 M (40:) s
+35.4 178 M
+(                ) s
+18.6 170 M (41:) s
+35.4 170 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 170 M
+(/** added assignment */) s
+/F-gs-font 7 7 SF
+18.6 162 M (42:) s
+35.4 162 M
+(                price = 0;) s
+18.6 154 M (43:) s
+35.4 154 M
+(        }) s
+18.6 146 M (44:) s
+18.6 138 M (45:) s
+18.6 130 M (46:) s
+35.4 130 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 130 M
+(/** Returns the age of the book in days since publication */) s
+/F-gs-font 7 7 SF
+18.6 122 M (47:) s
+35.4 122 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 122 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 122 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 122 M
+(int) s
+/F-gs-font 7 7 SF
+111 122 M
+( age\(\){) s
+18.6 114 M (48:) s
+35.4 114 M
+(                Date now = ) s
+/Courier-Bold 7 7 SUF
+148.8 114 M
+(new) s
+/F-gs-font 7 7 SF
+161.4 114 M
+( Date\(\);) s
+18.6 106 M (49:) s
+35.4 106 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 106 M
+(long) s
+/F-gs-font 7 7 SF
+119.4 106 M
+( age_ms = now.getTime\(\) - dateOfPublication.getTime\(\);) s
+18.6 98 M (50:) s
+35.4 98 M
+(                              ) s
+/Courier-Oblique 7 7 SUF
+161.4 98 M
+(//age in milliseconds) s
+/F-gs-font 7 7 SF
+18.6 90 M (51:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 90 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 90 M
+(return) s
+/F-gs-font 7 7 SF
+127.8 90 M
+( \() s
+/Courier-Bold 7 7 SUF
+136.2 90 M
+(int) s
+/F-gs-font 7 7 SF
+148.8 90 M
+(\) \(age_ms/\(\() s
+/Courier-Bold 7 7 SUF
+199.2 90 M
+(long) s
+/F-gs-font 7 7 SF
+216 90 M
+(\)1000*3600*24\)\); ) s
+/Courier-Oblique 7 7 SUF
+287.4 90 M
+(//convert to days) s
+/F-gs-font 7 7 SF
+18.6 82 M (52:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 82 M
+(        }) s
+18.6 74 M (53:) s
+18.6 66 M (54:) s
+35.4 66 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 66 M
+(/** Returns a String representation of the book */) s
+/F-gs-font 7 7 SF
+18.6 58 M (55:) s
+35.4 58 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 58 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 58 M
+( String toString\(\){) s
+18.6 50 M (56:) s
+35.4 50 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 50 M
+(return) s
+/F-gs-font 7 7 SF
+127.8 50 M
+( id + ) s
+/Courier-Bold 7 7 SUF
+153 50 M
+(", ") s
+/F-gs-font 7 7 SF
+169.8 50 M
+( + title + ) s
+/Courier-Bold 7 7 SUF
+216 50 M
+(", ") s
+/F-gs-font 7 7 SF
+232.8 50 M
+( + author +) s
+18.6 42 M (57:) s
+35.4 42 M
+(                        ) s
+/Courier-Bold 7 7 SUF
+136.2 42 M
+(", ") s
+/F-gs-font 7 7 SF
+153 42 M
+( + dateToString\(dateOfPublication\);) s
+18.6 34 M (58:) s
+35.4 34 M
+(        }) s
+18.6 26 M (59:) s
+18.6 18 M (60:) s
+35.4 18 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 18 M
+(/** Reads all book data from user input */) s
+/F-gs-font 7 7 SF
+18.6 10 M (61:) s
+35.4 10 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 10 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 10 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 10 M
+(void) s
+/F-gs-font 7 7 SF
+115.2 10 M
+( input\(\) ) s
+/Courier-Bold 7 7 SUF
+153 10 M
+(throws) s
+/F-gs-font 7 7 SF
+178.2 10 M
+( ParseException{) s
+18.6 2 M (62:) s
+35.4 2 M
+(                Scanner scn = ) s
+/Courier-Bold 7 7 SUF
+161.4 2 M
+(new) s
+/F-gs-font 7 7 SF
+174 2 M
+( Scanner\(System.in\);) s
+390.6 490 M (63:) s
+407.4 490 M
+(                System.out.print\() s
+/Courier-Bold 7 7 SUF
+546 490 M
+("Please enter id: ") s
+/F-gs-font 7 7 SF
+625.8 490 M
+(\);) s
+390.6 482 M (64:) s
+407.4 482 M
+(                id = Integer.parseInt\(scn.nextLine\(\)\);) s
+390.6 474 M (65:) s
+407.4 474 M
+(                System.out.print\() s
+/Courier-Bold 7 7 SUF
+546 474 M
+("Please enter the title: ") s
+/F-gs-font 7 7 SF
+655.2 474 M
+(\);) s
+390.6 466 M (66:) s
+407.4 466 M
+(                title = scn.nextLine\(\);) s
+390.6 458 M (67:) s
+407.4 458 M
+(                System.out.print\() s
+/Courier-Bold 7 7 SUF
+546 458 M
+("Please enter the author's first") s
+/F-gs-font 7 7 SF
+684.6 458 M
+( +) s
+390.6 450 M (68:) s
+407.4 450 M
+(                                 ) s
+/Courier-Bold 7 7 SUF
+546 450 M
+("and lastname: ") s
+/F-gs-font 7 7 SF
+613.2 450 M
+(\);) s
+390.6 442 M (69:) s
+407.4 442 M
+(                author = scn.nextLine\(\);) s
+390.6 434 M (70:) s
+407.4 434 M
+(                System.out.print\() s
+/Courier-Bold 7 7 SUF
+546 434 M
+("Please enter date of publication ") s
+/F-gs-font 7 7 SF
+693 434 M
+( +) s
+390.6 426 M (71:) s
+407.4 426 M
+(                                 ) s
+/Courier-Bold 7 7 SUF
+546 426 M
+("\(e.g. 01.12.2007\): ") s
+/F-gs-font 7 7 SF
+634.2 426 M
+(\);) s
+390.6 418 M (72:) s
+407.4 418 M
+(                dateOfPublication = stringToDate\(scn.nextLine\(\)\);) s
+390.6 410 M (73:) s
+407.4 410 M
+(        }) s
+390.6 402 M (74:) s
+390.6 394 M (75:) s
+390.6 386 M (76:) s
+407.4 386 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 386 M
+(// Get-/Set-methods) s
+/F-gs-font 7 7 SF
+390.6 378 M (77:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+407.4 378 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 378 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 378 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 378 M
+(int) s
+/F-gs-font 7 7 SF
+483 378 M
+( getId\(\){) s
+390.6 370 M (78:) s
+407.4 370 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 370 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 370 M
+( id;) s
+390.6 362 M (79:) s
+407.4 362 M
+(        }) s
+390.6 354 M (80:) s
+407.4 354 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 354 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 354 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 354 M
+(void) s
+/F-gs-font 7 7 SF
+487.2 354 M
+( setId\() s
+/Courier-Bold 7 7 SUF
+516.6 354 M
+(int) s
+/F-gs-font 7 7 SF
+529.2 354 M
+( newId\){) s
+390.6 346 M (81:) s
+407.4 346 M
+(                id = newId;) s
+390.6 338 M (82:) s
+407.4 338 M
+(        }) s
+390.6 330 M (83:) s
+407.4 330 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 330 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 330 M
+( String getAuthor\(\){) s
+390.6 322 M (84:) s
+407.4 322 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 322 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 322 M
+( author;) s
+390.6 314 M (85:) s
+407.4 314 M
+(        }) s
+390.6 306 M (86:) s
+407.4 306 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 306 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 306 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 306 M
+(void) s
+/F-gs-font 7 7 SF
+487.2 306 M
+( setAuthor\(String newAuthor\){) s
+390.6 298 M (87:) s
+407.4 298 M
+(                author = newAuthor;) s
+390.6 290 M (88:) s
+407.4 290 M
+(        }) s
+390.6 282 M (89:) s
+407.4 282 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 282 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 282 M
+( String getTitle\(\){) s
+390.6 274 M (90:) s
+407.4 274 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 274 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 274 M
+( title;) s
+390.6 266 M (91:) s
+407.4 266 M
+(        }) s
+390.6 258 M (92:) s
+407.4 258 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 258 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 258 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 258 M
+(void) s
+/F-gs-font 7 7 SF
+487.2 258 M
+( setTitle\(String newTitle\){) s
+390.6 250 M (93:) s
+407.4 250 M
+(                title = newTitle;) s
+390.6 242 M (94:) s
+407.4 242 M
+(        }) s
+390.6 234 M (95:) s
+407.4 234 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 234 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 234 M
+( Date getDateOfPublication\(\){) s
+390.6 226 M (96:) s
+407.4 226 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 226 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 226 M
+( dateOfPublication;) s
+390.6 218 M (97:) s
+407.4 218 M
+(        }) s
+390.6 210 M (98:) s
+407.4 210 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 210 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 210 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 210 M
+(void) s
+/F-gs-font 7 7 SF
+487.2 210 M
+( setDateOfPublication\(Date newDate\){) s
+390.6 202 M (99:) s
+407.4 202 M
+(                dateOfPublication = newDate;) s
+386.4 194 M (100:) s
+407.4 194 M
+(        }) s
+386.4 186 M (101:) s
+407.4 186 M
+(        ) s
+386.4 178 M (102:) s
+407.4 178 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 178 M
+(/** added method */) s
+/F-gs-font 7 7 SF
+386.4 170 M (103:) s
+407.4 170 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 170 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 170 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 170 M
+(int) s
+/F-gs-font 7 7 SF
+483 170 M
+( getPrice\(\) {) s
+386.4 162 M (104:) s
+407.4 162 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 162 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 162 M
+( price;) s
+386.4 154 M (105:) s
+407.4 154 M
+(        }) s
+386.4 146 M (106:) s
+407.4 146 M
+(  ) s
+386.4 138 M (107:) s
+407.4 138 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 138 M
+(/** added method */) s
+/F-gs-font 7 7 SF
+386.4 130 M (108:) s
+407.4 130 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 130 M
+(public) s
+/F-gs-font 7 7 SF
+466.2 130 M
+( ) s
+/Courier-Bold 7 7 SUF
+470.4 130 M
+(void) s
+/F-gs-font 7 7 SF
+487.2 130 M
+( setPrice\() s
+/Courier-Bold 7 7 SUF
+529.2 130 M
+(int) s
+/F-gs-font 7 7 SF
+541.8 130 M
+( newPrice\) {) s
+386.4 122 M (109:) s
+407.4 122 M
+(                price = Math.max\(0, newPrice\);) s
+386.4 114 M (110:) s
+407.4 114 M
+(        }) s
+386.4 106 M (111:) s
+407.4 106 M
+(        ) s
+386.4 98 M (112:) s
+407.4 98 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 98 M
+(// private methods --------------------------------------------) s
+/F-gs-font 7 7 SF
+386.4 90 M (113:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+407.4 90 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 90 M
+(/** Converts the Date object d into a String object */) s
+/F-gs-font 7 7 SF
+386.4 82 M (114:) s
+407.4 82 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 82 M
+(private) s
+/F-gs-font 7 7 SF
+470.4 82 M
+( String dateToString\(Date d\){) s
+386.4 74 M (115:) s
+407.4 74 M
+(                SimpleDateFormat fmt = ) s
+/Courier-Bold 7 7 SUF
+571.2 74 M
+(new) s
+/F-gs-font 7 7 SF
+583.8 74 M
+( SimpleDateFormat\(DATE_FORMAT\);) s
+386.4 66 M (116:) s
+407.4 66 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 66 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 66 M
+( fmt.format\(d\);) s
+386.4 58 M (117:) s
+407.4 58 M
+(        }) s
+386.4 50 M (118:) s
+386.4 42 M (119:) s
+407.4 42 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+441 42 M
+(/** Converts the String object s into a Date object */) s
+/F-gs-font 7 7 SF
+386.4 34 M (120:) s
+407.4 34 M
+(        ) s
+/Courier-Bold 7 7 SUF
+441 34 M
+(private) s
+/F-gs-font 7 7 SF
+470.4 34 M
+( Date stringToDate\(String s\) ) s
+/Courier-Bold 7 7 SUF
+592.2 34 M
+(throws) s
+/F-gs-font 7 7 SF
+617.4 34 M
+( ParseException{) s
+386.4 26 M (121:) s
+407.4 26 M
+(                SimpleDateFormat fmt = ) s
+/Courier-Bold 7 7 SUF
+571.2 26 M
+(new) s
+/F-gs-font 7 7 SF
+583.8 26 M
+( SimpleDateFormat\(DATE_FORMAT\);) s
+386.4 18 M (122:) s
+407.4 18 M
+(                ) s
+/Courier-Bold 7 7 SUF
+474.6 18 M
+(return) s
+/F-gs-font 7 7 SF
+499.8 18 M
+( fmt.parse\(s\);) s
+386.4 10 M (123:) s
+407.4 10 M
+(        }) s
+386.4 2 M (124:) s
+407.4 2 M
+(}) s
+_R
+S
+%%Page: (1) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (Order.java) def
+/fdir (.) def
+/ftail (Order.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/08/11) def
+/modtimestr (07:12:08) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 490 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 490 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 482 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 482 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 474 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 474 M
+( Aufgabe 3-2) s
+/F-gs-font 7 7 SF
+22.8 466 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 466 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 458 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 458 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 450 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 450 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 442 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 442 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 434 M (8:) s
+22.8 426 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 426 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 426 M
+( java.text.SimpleDateFormat;) s
+18.6 418 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 418 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 418 M
+( java.util.ArrayList;) s
+18.6 410 M (11:) s
+18.6 402 M (12:) s
+/Courier-Bold 7 7 SUF
+35.4 402 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 402 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 402 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 402 M
+( Order {) s
+18.6 394 M (13:) s
+18.6 386 M (14:) s
+35.4 386 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 386 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 386 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 386 M
+(static) s
+/F-gs-font 7 7 SF
+111 386 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 386 M
+(int) s
+/F-gs-font 7 7 SF
+127.8 386 M
+( _id = 0;) s
+18.6 378 M (15:) s
+35.4 378 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 378 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 378 M
+( String _customerName;) s
+18.6 370 M (16:) s
+35.4 370 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 370 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 370 M
+( String _customerAddress;) s
+18.6 362 M (17:) s
+35.4 362 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 362 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 362 M
+( ArrayList _booksList = ) s
+/Courier-Bold 7 7 SUF
+182.4 362 M
+(new) s
+/F-gs-font 7 7 SF
+195 362 M
+( ArrayList\(\);) s
+18.6 354 M (18:) s
+18.6 346 M (19:) s
+35.4 346 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 346 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 346 M
+( Order\(\) {) s
+18.6 338 M (20:) s
+35.4 338 M
+(        _id++;) s
+18.6 330 M (21:) s
+35.4 330 M
+(    }) s
+18.6 322 M (22:) s
+18.6 314 M (23:) s
+35.4 314 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 314 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 314 M
+( String toString\(\) {) s
+18.6 306 M (24:) s
+35.4 306 M
+(        String output = ) s
+/Courier-Bold 7 7 SUF
+136.2 306 M
+("Order id: ") s
+/F-gs-font 7 7 SF
+186.6 306 M
+( + _id + ) s
+/Courier-Bold 7 7 SUF
+224.4 306 M
+(", Customer: ") s
+/F-gs-font 7 7 SF
+283.2 306 M
+( + _customerName +) s
+18.6 298 M (25:) s
+35.4 298 M
+(                        ) s
+/Courier-Bold 7 7 SUF
+136.2 298 M
+(", ") s
+/F-gs-font 7 7 SF
+153 298 M
+( + _customerAddress + ) s
+/Courier-Bold 7 7 SUF
+245.4 298 M
+("\\n") s
+/F-gs-font 7 7 SF
+262.2 298 M
+(;) s
+18.6 290 M (26:) s
+35.4 290 M
+(        SimpleDateFormat fmt = ) s
+/Courier-Bold 7 7 SUF
+165.6 290 M
+(new) s
+/F-gs-font 7 7 SF
+178.2 290 M
+( SimpleDateFormat\(Book.DATE_FORMAT\);) s
+18.6 282 M (27:) s
+18.6 274 M (28:) s
+35.4 274 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 274 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 274 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 274 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 274 M
+( i = 0; i < _booksList.size\(\); i++\) {) s
+18.6 266 M (29:) s
+35.4 266 M
+(            Book currentBook = \(Book\) _booksList.get\(i\);) s
+18.6 258 M (30:) s
+35.4 258 M
+(            output += currentBook.getId\(\) + ) s
+/Courier-Bold 7 7 SUF
+220.2 258 M
+(", ") s
+/F-gs-font 7 7 SF
+237 258 M
+( + currentBook.getTitle\(\) +) s
+18.6 250 M (31:) s
+35.4 250 M
+(                      ) s
+/Courier-Bold 7 7 SUF
+127.8 250 M
+(", ") s
+/F-gs-font 7 7 SF
+144.6 250 M
+( + currentBook.getAuthor\(\) + ) s
+/Courier-Bold 7 7 SUF
+266.4 250 M
+(", ") s
+/F-gs-font 7 7 SF
+283.2 250 M
+( +) s
+18.6 242 M (32:) s
+35.4 242 M
+(                      fmt.format\(currentBook.getDateOfPublication\(\)\) + ) s
+/Courier-Bold 7 7 SUF
+333.6 242 M
+(", ") s
+/F-gs-font 7 7 SF
+350.4 242 M
+( +) s
+18.6 234 M (33:) s
+35.4 234 M
+(                      currentBook.getPrice\(\) + ) s
+/Courier-Bold 7 7 SUF
+232.8 234 M
+(" CHF\\n") s
+/F-gs-font 7 7 SF
+266.4 234 M
+(;) s
+18.6 226 M (34:) s
+35.4 226 M
+(        }) s
+18.6 218 M (35:) s
+18.6 210 M (36:) s
+35.4 210 M
+(        output += ) s
+/Courier-Bold 7 7 SUF
+111 210 M
+("Total price: ") s
+/F-gs-font 7 7 SF
+174 210 M
+( + getTotalPrice\(\) + ) s
+/Courier-Bold 7 7 SUF
+262.2 210 M
+(" CHF") s
+/F-gs-font 7 7 SF
+287.4 210 M
+(;) s
+18.6 202 M (37:) s
+35.4 202 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 202 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 202 M
+( output;) s
+18.6 194 M (38:) s
+35.4 194 M
+(    }) s
+18.6 186 M (39:) s
+35.4 186 M
+(    ) s
+18.6 178 M (40:) s
+35.4 178 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 178 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 178 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 178 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 178 M
+( setCustomerName\(String newName\) {) s
+18.6 170 M (41:) s
+35.4 170 M
+(        _customerName = newName;) s
+18.6 162 M (42:) s
+35.4 162 M
+(    }) s
+18.6 154 M (43:) s
+35.4 154 M
+(    ) s
+18.6 146 M (44:) s
+35.4 146 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 146 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 146 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 146 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 146 M
+( setCustomerAddress\(String newAddress\) {) s
+18.6 138 M (45:) s
+35.4 138 M
+(        _customerAddress = newAddress;) s
+18.6 130 M (46:) s
+35.4 130 M
+(    }) s
+18.6 122 M (47:) s
+18.6 114 M (48:) s
+35.4 114 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 114 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 114 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 114 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 114 M
+( addBook\(Book newBook\) {) s
+18.6 106 M (49:) s
+35.4 106 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 106 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 106 M
+( \(_booksList.size\(\) < 5\) {) s
+18.6 98 M (50:) s
+35.4 98 M
+(            _booksList.add\(newBook\);) s
+18.6 90 M (51:) s
+35.4 90 M
+(        }) s
+18.6 82 M (52:) s
+35.4 82 M
+(    }) s
+18.6 74 M (53:) s
+18.6 66 M (54:) s
+35.4 66 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 66 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 66 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 66 M
+(int) s
+/F-gs-font 7 7 SF
+94.2 66 M
+( getTotalPrice\(\) {) s
+18.6 58 M (55:) s
+35.4 58 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 58 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 58 M
+( total = 0;) s
+18.6 50 M (56:) s
+35.4 50 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 50 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 50 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 50 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 50 M
+( i = 0; i < _booksList.size\(\); i ++\) {) s
+18.6 42 M (57:) s
+35.4 42 M
+(            Book currentBook = \(Book\) _booksList.get\(i\);) s
+18.6 34 M (58:) s
+35.4 34 M
+(            total += currentBook.getPrice\(\);) s
+18.6 26 M (59:) s
+35.4 26 M
+(        }) s
+18.6 18 M (60:) s
+35.4 18 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 18 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 18 M
+( total;) s
+18.6 10 M (61:) s
+35.4 10 M
+(    }) s
+18.6 2 M (62:) s
+35.4 2 M
+(}) s
+_R
+S
+%%Trailer
+%%Pages: 2
+%%DocumentNeededResources: font Times-Roman Courier-Oblique Courier-Bold 
+%%+ font Courier Times-Bold 
+%%EOF

@@ -1,6 +1,9 @@
 /*
  Programmierung 1 HS 2011
- Musterlösung Aufgabe 3-2
+ Aufgabe 3-2
+ 
+ Michael Kohler - 11-108-289
+ Lukas Diener - 11-123-213
 */
 
 import java.util.Date;
@@ -12,32 +15,40 @@ public class Book{
 	private String title;
 	private String author;
 	private Date dateOfPublication;
-  private int price;
+	
+	/** added variable */
+        private int price;
 
 	public static final String DATE_FORMAT = "dd.MM.yyyy";
 
-	public Book(int tmpId, String tmpTitle, String tmpAuthor, Date tmpDateOfPubl, int tmpPrice){
+	public Book(int tmpId, String tmpTitle, String tmpAuthor,
+                    Date tmpDateOfPubl, int tmpPrice){
 		id = tmpId;
 		title = tmpTitle;
 		author = tmpAuthor;
 		dateOfPublication = tmpDateOfPubl;
-    price = Math.max(0, tmpPrice);
-  }
+		
+		/** added assignment */
+                price = Math.max(0, tmpPrice);
+        }
 
 	public Book(){
 		id = 0;
 		title = "";
 		author = "";
 		dateOfPublication = new Date();
-    price = 0;
+		
+		/** added assignment */
+                price = 0;
 	}
 
 
 	/** Returns the age of the book in days since publication */
 	public int age(){
 		Date now = new Date();
-		long age_ms = now.getTime() - dateOfPublication.getTime(); //age in milliseconds
-		return (int) (age_ms/((long)1000*3600*24));	//convert to days
+		long age_ms = now.getTime() - dateOfPublication.getTime();
+                              //age in milliseconds
+		return (int) (age_ms/((long)1000*3600*24)); //convert to days
 	}
 
 	/** Returns a String representation of the book */
@@ -53,9 +64,11 @@ public class Book{
 		id = Integer.parseInt(scn.nextLine());
 		System.out.print("Please enter the title: ");
 		title = scn.nextLine();
-		System.out.print("Please enter the author's first and lastname: ");
+		System.out.print("Please enter the author's first" +
+                                 "and lastname: ");
 		author = scn.nextLine();
-		System.out.print("Please enter date of publication (e.g. 01.12.2007): ");
+		System.out.print("Please enter date of publication " +
+                                 "(e.g. 01.12.2007): ");
 		dateOfPublication = stringToDate(scn.nextLine());
 	}
 
@@ -85,12 +98,16 @@ public class Book{
 	public void setDateOfPublication(Date newDate){
 		dateOfPublication = newDate;
 	}
-  public void getPrice() {
-    return price;
-  }
-  public void setPrice(int newPrice) {
-    price = Math.max(0, newPrice);
-  }
+	
+	/** added method */
+        public int getPrice() {
+                return price;
+        }
+  
+        /** added method */
+        public void setPrice(int newPrice) {
+                price = Math.max(0, newPrice);
+        }
 	
 	// private methods --------------------------------------------
 	/** Converts the Date object d into a String object */
