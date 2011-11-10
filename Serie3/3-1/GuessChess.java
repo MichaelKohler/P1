@@ -1,7 +1,9 @@
 /*
 
 */
-
+import java.util.Scanner;
+import java.util.Random;
+import java.lang.Integer;
 
 public class GuessChess{
 	private int secretRow;	   // secret row, between 1 and 8
@@ -11,13 +13,47 @@ public class GuessChess{
 	
 	public static void main (String[] args) {
 		GuessChess game = new GuessChess();
+		game.showWelcomeScreen();
+		game.printEmptyBoard();
 		game.start();
 	}
 
 
 	// your code goes here...
 
+	private void start (){
+		Random randomGenerator = new Random();
+		secretRow = (randomGenerator.nextInt(7)+1);
+		secretColumn = getColumnAsChar(randomGenerator.nextInt(7)+1);
+		Scanner scan = new Scanner(System.in);
+		char[] lastGuess;
+		System.out.println("Random values: "+secretRow+" "+secretColumn);
+		for(int i = 3; i > 0; i-- ){
+			System.out.println("You have "+i+" attempts left . Guess field (e.g. b3 ):");
+			String input = scan.next();
+			char[] field = input.toCharArray();
+			lastGuess = field;
+			int row = Integer.parseInt(field[1]);
+			System.out.println(row);
+			char column = field[0];
+			System.out.println(getColumnAsChar(column));
+			this.printBoard(getColumnAsChar(column), getColumnAsChar(row));
+			System.out.println("User values: "+row+" "+getColumnAsChar(column));
 
+			String message;
+			if(row == secretRow && column == getColumnAsInt(secretColumn)){
+				System.out.println("You win !");
+			}else{
+				message = lastGuess[0]+" "+(char)lastGuess[1]+" was wrong . Hints : ";
+				if(row>secretRow) message+= "GO DOWN!";
+				if(row<secretRow) message+= "GO UP!";
+				if(column>getColumnAsInt(secretColumn)) message+= "GO LEFT!";
+				if(column<getColumnAsInt(secretColumn)) message+= "GO RIGHT!";
+				System.out.println(message);
+			}
+			
+		}
+	}
 
 
 	// ==================================================================
