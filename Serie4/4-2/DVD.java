@@ -3,23 +3,21 @@
  Aufgabe 4-2
 */
 
-public class Book implements IArticle {
+public class DVD implements IArticle {
 	  private int id;
 	  private String title;
-	  private String author;
-  	private int year;
+	  private int year;
 	  private int price; // CHF
 
 	  /** constructor */
-	  public Book(int id, String title, String author, int year, int price) {
+	  public DVD(int id, String title, int year, int price) {
 		    this.id = id;
 		    this.title = title;
-		    this.author = author;
 		    this.year = year;
 		    this.price = price;
 	  }
-	
-  	public int getId() {
+	  
+	  public int getId() {
   	    return this.id;
   	}
 	
@@ -28,8 +26,8 @@ public class Book implements IArticle {
   	}
 	
   	public String getDescription() {
-  	    String description = this.id + " (Book) " + this.title + ", by " +
-  	        this.author + ", " + this.year + ", " + this.price + " CHF";
+  	    String description = this.id + " (DVD) " + this.title + ", " +
+  	        this.year + ", " + this.price + " CHF";
   	    return description;
   	}
 }
