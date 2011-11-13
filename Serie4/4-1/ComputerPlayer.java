@@ -41,6 +41,6 @@ public class ComputerPlayer implements IPlayer{
 	}
 	
 	public String getProgrammers(){
-		return "Random Player";
+		return "Lukas Diener, Michael Kohler";
 	}
 }

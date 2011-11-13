@@ -43,6 +43,6 @@ public class HumanPlayer implements IPlayer{
 	}
 	
 	public String getProgrammers(){
-		return "Human";
+		return "Lukas Diener, Michael Kohler";
 	}
 }

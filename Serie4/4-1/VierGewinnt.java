@@ -21,6 +21,8 @@ public class VierGewinnt {
 	private Token[][] board = new Token[COLS][ROWS]; // 7 columns with 6 fields each
 	private IPlayer[] players = new IPlayer[2]; // two players
 	
+	private Token correctToken;
+	
 	/** initialize board and players and start the game */
 	public void play() {
 		// initialize the board
@@ -61,26 +63,128 @@ public class VierGewinnt {
 	
 	/** Inserts the token at the specified column (if possible)
 	    and returns the row where the token landed */
+	    
+	/** !!!!! Achtung: in der Aufgabenstellung steht, dass das Programm bei ungültiger
+	    Eingabe mit Fehlermeldung terminieren soll. Hier ist das aber gar nicht
+	    noetig, da eine ungültige Spaltenangabe abgefangen wird und neu gefragt
+	    wird. !!!!! */
 	private int insertToken(int column, Token tok){
-		// TODO
+		int row = -1;
+		for (int i = 0; i < board[column].length; i++) {
+		  if (board[column][i].equals(Token.empty)) {
+		    row = i;
+		    break;
+		  }
+		}
+		board[column][row] = tok;
+		return row;
 	}
 	
 	
 	/** Checks if every position is occupied */
 	private boolean isBoardFull() {
-		// TODO
+		boolean full = false;
+		for (int i = 0; i < this.COLS; i++) {
+		  full = !board[i][this.ROWS - 1].equals(Token.empty);
+		}
+		return full;
 	}
 	
 	
 	/** Checks for at least four equal tokens in a row in either direction,
 	    starting from the given position. */
 	private boolean checkVierGewinnt(int col, int row){
-		// TODO
+	  this.correctToken = board[col][row];
+	
+		boolean horizontal = checkHorizontal(col, row);
+		boolean vertical = checkVertical(col, row);
+		boolean diagonal1 = checkDiagonal1(col, row);
+		boolean diagonal2 = checkDiagonal2(col, row);
+
+    return (horizontal || vertical || diagonal1 || diagonal2);
 	}
 
-
+  private boolean checkHorizontal(int col, int row) {
+    int counter = 1;
+    for (int i = col + 1; i < this.COLS; i++) {
+      if (board[i][row].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    for (int i = col - 1; i >= 0; i--) {
+      if (board[i][row].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    return (counter == 4);
+  }
 	
-	
+	private boolean checkVertical(int col, int row) {
+    int counter = 1;
+    for (int i = row + 1; i < this.ROWS; i++) {
+      if (board[col][i].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    for (int i = row - 1; i >= 0; i--) {
+      if (board[col][i].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    return (counter == 4);
+  }
+  
+  private boolean checkDiagonal1(int col, int row) {
+    int counter = 1;
+    int i, j;
+    for (i = row + 1, j = col + 1; i < this.ROWS && j < this.COLS;
+         i++, j++) {
+      if (board[j][i].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    int k, l;
+    for (k = row - 1, l = col - 1; k >= 0 && l >= 0; k--, l--) {
+      if (board[l][k].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    return (counter == 4);
+  }
+  
+  private boolean checkDiagonal2(int col, int row) {
+    int counter = 1;
+    int i, j;
+    for (i = row + 1, j = col - 1; i < this.ROWS && j >= 0;
+         i++, j--) {
+      if (board[j][i].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    int k, l;
+    for (k = row - 1, l = col + 1; k >= 0 && l < this.COLS; k--, l++) {
+      if (board[l][k].equals(this.correctToken))
+        counter++;
+      else
+        break;
+    }
+    
+    return (counter == 4);
+  }
 	
 	/** returns a graphical representation of the board */
 	public static String displayBoard(Token[][] myBoard){
