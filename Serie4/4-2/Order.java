@@ -1,6 +1,6 @@
 /*
  Programmierung 1 HS 2011
- Aufgabe 3-2
+ Aufgabe 4-2
  
  Michael Kohler - 11-108-289
  Lukas Diener - 11-123-213
