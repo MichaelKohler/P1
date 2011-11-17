@@ -89,9 +89,10 @@ public class VierGewinnt {
 	
 	/** Checks if every position is occupied */
 	private boolean isBoardFull() {
-		boolean full = false;
+		boolean full = true;
 		for (int i = 0; i < this.COLS; i++) {
-		  full = !board[i][this.ROWS - 1].equals(Token.empty);
+		  if (board[i][this.ROWS - 1].equals(Token.empty))
+		    full = false;
 		}
 		return full;
 	}
