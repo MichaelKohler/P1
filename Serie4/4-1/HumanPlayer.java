@@ -1,4 +1,10 @@
-/* Programmierung 1 HS 2011 Aufgabe 4-1 */
+/*
+Programmierung 1 HS 2011
+Aufgabe 4-1
+
+Michael Kohler - 11-108-289
+Lukas Diener - 11-123-213
+ */
 
 import java.util.Scanner;
 

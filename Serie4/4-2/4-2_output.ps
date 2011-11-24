@@ -1,0 +1,3405 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 24 24 571 818
+%%Title: Enscript Output
+%%For: Lukas
+%%Creator: GNU enscript 1.6.3
+%%CreationDate: Thu Nov 24 15:20:48 2011
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 3
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88592 1.6 3
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/Aogonek      	/breve        	/Lslash       	
+/currency     	/Lcaron       	/Sacute       	/section      	
+/dieresis     	/Scaron       	/Scedilla     	/Tcaron       	
+/Zacute       	/hyphen       	/Zcaron       	/Zdotaccent   	
+/degree       	/aogonek      	/ogonek       	/lslash       	
+/acute        	/lcaron       	/sacute       	/caron        	
+/cedilla      	/scaron       	/scedilla     	/tcaron       	
+/zacute       	/hungarumlaut 	/zcaron       	/zdotaccent   	
+/Racute       	/Aacute       	/Acircumflex  	/Abreve       	
+/Adieresis    	/Lacute       	/Cacute       	/Ccedilla     	
+/Ccaron       	/Eacute       	/Eogonek      	/Edieresis    	
+/Ecaron       	/Iacute       	/Icircumflex  	/Dcaron       	
+/Eth          	/Nacute       	/Ncaron       	/Oacute       	
+/Ocircumflex  	/Ohungarumlaut	/Odieresis    	/multiply     	
+/Rcaron       	/Uring        	/Uacute       	/Uhungarumlaut	
+/Udieresis    	/Yacute       	/Tcedilla     	/germandbls   	
+/racute       	/aacute       	/acircumflex  	/abreve       	
+/adieresis    	/lacute       	/cacute       	/ccedilla     	
+/ccaron       	/eacute       	/eogonek      	/edieresis    	
+/ecaron       	/iacute       	/icircumflex  	/dcaron       	
+/dbar         	/nacute       	/ncaron       	/oacute       	
+/ocircumflex  	/ohungarumlaut	/odieresis    	/divide       	
+/rcaron       	/uring        	/uacute       	/uhungarumlaut	
+/udieresis    	/yacute       	/tcedilla     	/dotaccent    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6 3
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 794 def
+/d_page_h 547 def
+/d_header_x 0 def
+/d_header_y 511 def
+/d_header_w 794 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 794 def
+/d_footer_h 0 def
+/d_output_w 794 def
+/d_output_h 511 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (Book.java) def
+/fdir () def
+/ftail (Book.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 437 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 437 M
+( Book ) s
+/Courier-Bold 7 7 SUF
+111 437 M
+(implements) s
+/F-gs-font 7 7 SF
+153 437 M
+( IArticle {) s
+18.6 429 M (10:) s
+35.4 429 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 429 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 429 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 429 M
+( id;) s
+18.6 421 M (11:) s
+35.4 421 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 421 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 421 M
+( String title;) s
+18.6 413 M (12:) s
+35.4 413 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 413 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 413 M
+( String author;) s
+18.6 405 M (13:) s
+35.4 405 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 405 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 405 M
+( ) s
+/Courier-Bold 7 7 SUF
+102.6 405 M
+(int) s
+/F-gs-font 7 7 SF
+115.2 405 M
+( year;) s
+18.6 397 M (14:) s
+35.4 397 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 397 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 397 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 397 M
+( price; ) s
+/Courier-Oblique 7 7 SUF
+157.2 397 M
+(// CHF) s
+/F-gs-font 7 7 SF
+18.6 389 M (15:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+18.6 381 M (16:) s
+35.4 381 M
+(          ) s
+/Courier-Oblique 7 7 SUF
+77.4 381 M
+(/** constructor */) s
+/F-gs-font 7 7 SF
+18.6 373 M (17:) s
+35.4 373 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 373 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 373 M
+( Book\() s
+/Courier-Bold 7 7 SUF
+127.8 373 M
+(int) s
+/F-gs-font 7 7 SF
+140.4 373 M
+( id, String title, String author, ) s
+/Courier-Bold 7 7 SUF
+283.2 373 M
+(int) s
+/F-gs-font 7 7 SF
+295.8 373 M
+( year, ) s
+/Courier-Bold 7 7 SUF
+325.2 373 M
+(int) s
+/F-gs-font 7 7 SF
+337.8 373 M
+( price\) {) s
+18.6 365 M (18:) s
+35.4 365 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 365 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 365 M
+(.id = id;) s
+18.6 357 M (19:) s
+35.4 357 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 357 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 357 M
+(.title = title;) s
+18.6 349 M (20:) s
+35.4 349 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 349 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 349 M
+(.author = author;) s
+18.6 341 M (21:) s
+35.4 341 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 341 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 341 M
+(.year = year;) s
+18.6 333 M (22:) s
+35.4 333 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 333 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 333 M
+(.price = price;) s
+18.6 325 M (23:) s
+35.4 325 M
+(          }) s
+18.6 317 M (24:) s
+35.4 317 M
+(        ) s
+18.6 309 M (25:) s
+35.4 309 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 309 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 309 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 309 M
+(int) s
+/F-gs-font 7 7 SF
+111 309 M
+( getId\(\) {) s
+18.6 301 M (26:) s
+35.4 301 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 301 M
+(return) s
+/F-gs-font 7 7 SF
+111 301 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 301 M
+(this) s
+/F-gs-font 7 7 SF
+132 301 M
+(.id;) s
+18.6 293 M (27:) s
+35.4 293 M
+(        }) s
+18.6 285 M (28:) s
+35.4 285 M
+(        ) s
+18.6 277 M (29:) s
+35.4 277 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 277 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 277 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 277 M
+(int) s
+/F-gs-font 7 7 SF
+111 277 M
+( getPrice\(\) {) s
+18.6 269 M (30:) s
+35.4 269 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 269 M
+(return) s
+/F-gs-font 7 7 SF
+111 269 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 269 M
+(this) s
+/F-gs-font 7 7 SF
+132 269 M
+(.price;) s
+18.6 261 M (31:) s
+35.4 261 M
+(        }) s
+18.6 253 M (32:) s
+35.4 253 M
+(        ) s
+18.6 245 M (33:) s
+35.4 245 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 245 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 245 M
+( String getDescription\(\) {) s
+18.6 237 M (34:) s
+35.4 237 M
+(            String description = ) s
+/Courier-Bold 7 7 SUF
+174 237 M
+(this) s
+/F-gs-font 7 7 SF
+190.8 237 M
+(.id + ) s
+/Courier-Bold 7 7 SUF
+216 237 M
+(" \(Book\) ") s
+/F-gs-font 7 7 SF
+258 237 M
+( + ) s
+/Courier-Bold 7 7 SUF
+270.6 237 M
+(this) s
+/F-gs-font 7 7 SF
+287.4 237 M
+(.title + ) s
+/Courier-Bold 7 7 SUF
+325.2 237 M
+(", by ") s
+/F-gs-font 7 7 SF
+354.6 237 M
+( +) s
+18.6 229 M (35:) s
+35.4 229 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 229 M
+(this) s
+/F-gs-font 7 7 SF
+119.4 229 M
+(.author + ) s
+/Courier-Bold 7 7 SUF
+161.4 229 M
+(", ") s
+/F-gs-font 7 7 SF
+178.2 229 M
+( + ) s
+/Courier-Bold 7 7 SUF
+190.8 229 M
+(this) s
+/F-gs-font 7 7 SF
+207.6 229 M
+(.year + ) s
+/Courier-Bold 7 7 SUF
+241.2 229 M
+(", ") s
+/F-gs-font 7 7 SF
+258 229 M
+( + ) s
+/Courier-Bold 7 7 SUF
+270.6 229 M
+(this) s
+/F-gs-font 7 7 SF
+287.4 229 M
+(.price + ) s
+/Courier-Bold 7 7 SUF
+325.2 229 M
+(" CHF") s
+/F-gs-font 7 7 SF
+350.4 229 M
+(;) s
+18.6 221 M (36:) s
+35.4 221 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 221 M
+(return) s
+/F-gs-font 7 7 SF
+111 221 M
+( description;) s
+18.6 213 M (37:) s
+35.4 213 M
+(        }) s
+18.6 205 M (38:) s
+35.4 205 M
+(}) s
+_R
+S
+%%Page: (1) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (CD.java) def
+/fdir () def
+/ftail (CD.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 437 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 437 M
+( CD ) s
+/Courier-Bold 7 7 SUF
+102.6 437 M
+(implements) s
+/F-gs-font 7 7 SF
+144.6 437 M
+( IArticle {) s
+18.6 429 M (10:) s
+35.4 429 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 429 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+102.6 429 M
+(int) s
+/F-gs-font 7 7 SF
+115.2 429 M
+( id;) s
+18.6 421 M (11:) s
+35.4 421 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 421 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 421 M
+( String title;) s
+18.6 413 M (12:) s
+35.4 413 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 413 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 413 M
+( String author;) s
+18.6 405 M (13:) s
+35.4 405 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 405 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 405 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 405 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 405 M
+( year;) s
+18.6 397 M (14:) s
+35.4 397 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 397 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 397 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 397 M
+( price; ) s
+/Courier-Oblique 7 7 SUF
+157.2 397 M
+(// CHF) s
+/F-gs-font 7 7 SF
+18.6 389 M (15:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+18.6 381 M (16:) s
+35.4 381 M
+(          ) s
+/Courier-Oblique 7 7 SUF
+77.4 381 M
+(/** constructor */) s
+/F-gs-font 7 7 SF
+18.6 373 M (17:) s
+35.4 373 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 373 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 373 M
+( CD\() s
+/Courier-Bold 7 7 SUF
+119.4 373 M
+(int) s
+/F-gs-font 7 7 SF
+132 373 M
+( id, String title, String author, ) s
+/Courier-Bold 7 7 SUF
+274.8 373 M
+(int) s
+/F-gs-font 7 7 SF
+287.4 373 M
+( year, ) s
+/Courier-Bold 7 7 SUF
+316.8 373 M
+(int) s
+/F-gs-font 7 7 SF
+329.4 373 M
+( price\) {) s
+18.6 365 M (18:) s
+35.4 365 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 365 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 365 M
+(.id = id;) s
+18.6 357 M (19:) s
+35.4 357 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 357 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 357 M
+(.title = title;) s
+18.6 349 M (20:) s
+35.4 349 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 349 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 349 M
+(.author = author;) s
+18.6 341 M (21:) s
+35.4 341 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 341 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 341 M
+(.year = year;) s
+18.6 333 M (22:) s
+35.4 333 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 333 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 333 M
+(.price = price;) s
+18.6 325 M (23:) s
+35.4 325 M
+(          }) s
+18.6 317 M (24:) s
+35.4 317 M
+(          ) s
+18.6 309 M (25:) s
+35.4 309 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 309 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 309 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 309 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 309 M
+( getId\(\) {) s
+18.6 301 M (26:) s
+35.4 301 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 301 M
+(return) s
+/F-gs-font 7 7 SF
+111 301 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 301 M
+(this) s
+/F-gs-font 7 7 SF
+132 301 M
+(.id;) s
+18.6 293 M (27:) s
+35.4 293 M
+(        }) s
+18.6 285 M (28:) s
+35.4 285 M
+(        ) s
+18.6 277 M (29:) s
+35.4 277 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 277 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 277 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 277 M
+(int) s
+/F-gs-font 7 7 SF
+111 277 M
+( getPrice\(\) {) s
+18.6 269 M (30:) s
+35.4 269 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 269 M
+(return) s
+/F-gs-font 7 7 SF
+111 269 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 269 M
+(this) s
+/F-gs-font 7 7 SF
+132 269 M
+(.price;) s
+18.6 261 M (31:) s
+35.4 261 M
+(        }) s
+18.6 253 M (32:) s
+35.4 253 M
+(        ) s
+18.6 245 M (33:) s
+35.4 245 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 245 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 245 M
+( String getDescription\(\) {) s
+18.6 237 M (34:) s
+35.4 237 M
+(            String description = ) s
+/Courier-Bold 7 7 SUF
+174 237 M
+(this) s
+/F-gs-font 7 7 SF
+190.8 237 M
+(.id + ) s
+/Courier-Bold 7 7 SUF
+216 237 M
+(" \(CD\) ") s
+/F-gs-font 7 7 SF
+249.6 237 M
+( + ) s
+/Courier-Bold 7 7 SUF
+262.2 237 M
+(this) s
+/F-gs-font 7 7 SF
+279 237 M
+(.author + ) s
+/Courier-Bold 7 7 SUF
+321 237 M
+(", ") s
+/F-gs-font 7 7 SF
+337.8 237 M
+( +) s
+18.6 229 M (35:) s
+35.4 229 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 229 M
+(this) s
+/F-gs-font 7 7 SF
+119.4 229 M
+(.title + ) s
+/Courier-Bold 7 7 SUF
+157.2 229 M
+(", ") s
+/F-gs-font 7 7 SF
+174 229 M
+( + ) s
+/Courier-Bold 7 7 SUF
+186.6 229 M
+(this) s
+/F-gs-font 7 7 SF
+203.4 229 M
+(.year + ) s
+/Courier-Bold 7 7 SUF
+237 229 M
+(", ") s
+/F-gs-font 7 7 SF
+253.8 229 M
+( + ) s
+/Courier-Bold 7 7 SUF
+266.4 229 M
+(this) s
+/F-gs-font 7 7 SF
+283.2 229 M
+(.price + ) s
+/Courier-Bold 7 7 SUF
+321 229 M
+(" CHF") s
+/F-gs-font 7 7 SF
+346.2 229 M
+(;) s
+18.6 221 M (36:) s
+35.4 221 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 221 M
+(return) s
+/F-gs-font 7 7 SF
+111 221 M
+( description;) s
+18.6 213 M (37:) s
+35.4 213 M
+(        }) s
+18.6 205 M (38:) s
+35.4 205 M
+(}) s
+_R
+S
+%%Page: (1) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (DVD.java) def
+/fdir () def
+/ftail (DVD.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 437 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 437 M
+( DVD ) s
+/Courier-Bold 7 7 SUF
+106.8 437 M
+(implements) s
+/F-gs-font 7 7 SF
+148.8 437 M
+( IArticle {) s
+18.6 429 M (10:) s
+35.4 429 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 429 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 429 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 429 M
+( id;) s
+18.6 421 M (11:) s
+35.4 421 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 421 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 421 M
+( String title;) s
+18.6 413 M (12:) s
+35.4 413 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 413 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 413 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 413 M
+( year;) s
+18.6 405 M (13:) s
+35.4 405 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 405 M
+(private) s
+/F-gs-font 7 7 SF
+106.8 405 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 405 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 405 M
+( price; ) s
+/Courier-Oblique 7 7 SUF
+157.2 405 M
+(// CHF) s
+/F-gs-font 7 7 SF
+18.6 397 M (14:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+18.6 389 M (15:) s
+35.4 389 M
+(          ) s
+/Courier-Oblique 7 7 SUF
+77.4 389 M
+(/** constructor */) s
+/F-gs-font 7 7 SF
+18.6 381 M (16:) s
+35.4 381 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 381 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 381 M
+( DVD\() s
+/Courier-Bold 7 7 SUF
+123.6 381 M
+(int) s
+/F-gs-font 7 7 SF
+136.2 381 M
+( id, String title, ) s
+/Courier-Bold 7 7 SUF
+216 381 M
+(int) s
+/F-gs-font 7 7 SF
+228.6 381 M
+( year, ) s
+/Courier-Bold 7 7 SUF
+258 381 M
+(int) s
+/F-gs-font 7 7 SF
+270.6 381 M
+( price\) {) s
+18.6 373 M (17:) s
+35.4 373 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 373 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 373 M
+(.id = id;) s
+18.6 365 M (18:) s
+35.4 365 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 365 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 365 M
+(.title = title;) s
+18.6 357 M (19:) s
+35.4 357 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 357 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 357 M
+(.year = year;) s
+18.6 349 M (20:) s
+35.4 349 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 349 M
+(this) s
+/F-gs-font 7 7 SF
+136.2 349 M
+(.price = price;) s
+18.6 341 M (21:) s
+35.4 341 M
+(          }) s
+18.6 333 M (22:) s
+35.4 333 M
+(          ) s
+18.6 325 M (23:) s
+35.4 325 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 325 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 325 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 325 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 325 M
+( getId\(\) {) s
+18.6 317 M (24:) s
+35.4 317 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 317 M
+(return) s
+/F-gs-font 7 7 SF
+111 317 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 317 M
+(this) s
+/F-gs-font 7 7 SF
+132 317 M
+(.id;) s
+18.6 309 M (25:) s
+35.4 309 M
+(        }) s
+18.6 301 M (26:) s
+35.4 301 M
+(        ) s
+18.6 293 M (27:) s
+35.4 293 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 293 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 293 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 293 M
+(int) s
+/F-gs-font 7 7 SF
+111 293 M
+( getPrice\(\) {) s
+18.6 285 M (28:) s
+35.4 285 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 285 M
+(return) s
+/F-gs-font 7 7 SF
+111 285 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 285 M
+(this) s
+/F-gs-font 7 7 SF
+132 285 M
+(.price;) s
+18.6 277 M (29:) s
+35.4 277 M
+(        }) s
+18.6 269 M (30:) s
+35.4 269 M
+(        ) s
+18.6 261 M (31:) s
+35.4 261 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 261 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 261 M
+( String getDescription\(\) {) s
+18.6 253 M (32:) s
+35.4 253 M
+(            String description = ) s
+/Courier-Bold 7 7 SUF
+174 253 M
+(this) s
+/F-gs-font 7 7 SF
+190.8 253 M
+(.id + ) s
+/Courier-Bold 7 7 SUF
+216 253 M
+(" \(DVD\) ") s
+/F-gs-font 7 7 SF
+253.8 253 M
+( + ) s
+/Courier-Bold 7 7 SUF
+266.4 253 M
+(this) s
+/F-gs-font 7 7 SF
+283.2 253 M
+(.title + ) s
+/Courier-Bold 7 7 SUF
+321 253 M
+(", ") s
+/F-gs-font 7 7 SF
+337.8 253 M
+( +) s
+18.6 245 M (33:) s
+35.4 245 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 245 M
+(this) s
+/F-gs-font 7 7 SF
+119.4 245 M
+(.year + ) s
+/Courier-Bold 7 7 SUF
+153 245 M
+(", ") s
+/F-gs-font 7 7 SF
+169.8 245 M
+( + ) s
+/Courier-Bold 7 7 SUF
+182.4 245 M
+(this) s
+/F-gs-font 7 7 SF
+199.2 245 M
+(.price + ) s
+/Courier-Bold 7 7 SUF
+237 245 M
+(" CHF") s
+/F-gs-font 7 7 SF
+262.2 245 M
+(;) s
+18.6 237 M (34:) s
+35.4 237 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 237 M
+(return) s
+/F-gs-font 7 7 SF
+111 237 M
+( description;) s
+18.6 229 M (35:) s
+35.4 229 M
+(        }) s
+18.6 221 M (36:) s
+35.4 221 M
+(}) s
+_R
+S
+%%Page: (1) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (IArticle.java) def
+/fdir () def
+/ftail (IArticle.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 437 M
+(interface) s
+/F-gs-font 7 7 SF
+102.6 437 M
+( IArticle {) s
+18.6 429 M (10:) s
+35.4 429 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 429 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 429 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 429 M
+( id = 0;) s
+18.6 421 M (11:) s
+35.4 421 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 421 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 421 M
+( String title = ) s
+/Courier-Bold 7 7 SUF
+169.8 421 M
+("") s
+/F-gs-font 7 7 SF
+178.2 421 M
+(;) s
+18.6 413 M (12:) s
+35.4 413 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 413 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 413 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 413 M
+( year = 0;) s
+18.6 405 M (13:) s
+35.4 405 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 405 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 405 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 405 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 405 M
+( price = 0; ) s
+/Courier-Oblique 7 7 SUF
+169.8 405 M
+(// CHF) s
+/F-gs-font 7 7 SF
+18.6 397 M (14:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 397 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 397 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 397 M
+( String description = ) s
+/Courier-Bold 7 7 SUF
+195 397 M
+("") s
+/F-gs-font 7 7 SF
+203.4 397 M
+(;) s
+18.6 389 M (15:) s
+35.4 389 M
+(        ) s
+18.6 381 M (16:) s
+35.4 381 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 381 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 381 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 381 M
+( getId\(\);) s
+18.6 373 M (17:) s
+35.4 373 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 373 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+106.8 373 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 373 M
+( getPrice\(\);) s
+18.6 365 M (18:) s
+35.4 365 M
+(          ) s
+/Courier-Bold 7 7 SUF
+77.4 365 M
+(public) s
+/F-gs-font 7 7 SF
+102.6 365 M
+( String getDescription\(\);) s
+18.6 357 M (19:) s
+35.4 357 M
+(}) s
+_R
+S
+%%Page: (1) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (Order.java) def
+/fdir () def
+/ftail (Order.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+( ) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+( Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+( Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( java.text.SimpleDateFormat;) s
+18.6 429 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 429 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 429 M
+( java.util.ArrayList;) s
+18.6 421 M (11:) s
+18.6 413 M (12:) s
+/Courier-Bold 7 7 SUF
+35.4 413 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 413 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 413 M
+( Order {) s
+18.6 405 M (13:) s
+18.6 397 M (14:) s
+35.4 397 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 397 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 397 M
+(static) s
+/F-gs-font 7 7 SF
+111 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 397 M
+(int) s
+/F-gs-font 7 7 SF
+127.8 397 M
+( _id = 0;) s
+18.6 389 M (15:) s
+35.4 389 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 389 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 389 M
+( String _customerName;) s
+18.6 381 M (16:) s
+35.4 381 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 381 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 381 M
+( String _customerAddress;) s
+18.6 373 M (17:) s
+35.4 373 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 373 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 373 M
+( ArrayList _orderList = ) s
+/Courier-Bold 7 7 SUF
+182.4 373 M
+(new) s
+/F-gs-font 7 7 SF
+195 373 M
+( ArrayList\(\);) s
+18.6 365 M (18:) s
+18.6 357 M (19:) s
+35.4 357 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 357 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 357 M
+( Order\(\) {) s
+18.6 349 M (20:) s
+35.4 349 M
+(        _id++;) s
+18.6 341 M (21:) s
+35.4 341 M
+(    }) s
+18.6 333 M (22:) s
+35.4 333 M
+(    ) s
+18.6 325 M (23:) s
+35.4 325 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 325 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 325 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 325 M
+(int) s
+/F-gs-font 7 7 SF
+94.2 325 M
+( getId\(\) {) s
+18.6 317 M (24:) s
+35.4 317 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 317 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 317 M
+( _id;) s
+18.6 309 M (25:) s
+35.4 309 M
+(    }) s
+18.6 301 M (26:) s
+35.4 301 M
+(    ) s
+18.6 293 M (27:) s
+35.4 293 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 293 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 293 M
+( String getCustomerName\(\) {) s
+18.6 285 M (28:) s
+35.4 285 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 285 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 285 M
+( _customerName;) s
+18.6 277 M (29:) s
+35.4 277 M
+(    }) s
+18.6 269 M (30:) s
+35.4 269 M
+(    ) s
+18.6 261 M (31:) s
+35.4 261 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 261 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 261 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 261 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 261 M
+( setCustomerName\(String newName\) {) s
+18.6 253 M (32:) s
+35.4 253 M
+(        _customerName = newName;) s
+18.6 245 M (33:) s
+35.4 245 M
+(    }) s
+18.6 237 M (34:) s
+35.4 237 M
+(    ) s
+18.6 229 M (35:) s
+35.4 229 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 229 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 229 M
+( String getCustomerAddress\(\) {) s
+18.6 221 M (36:) s
+35.4 221 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 221 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 221 M
+( _customerAddress;) s
+18.6 213 M (37:) s
+35.4 213 M
+(    }) s
+18.6 205 M (38:) s
+35.4 205 M
+(    ) s
+18.6 197 M (39:) s
+35.4 197 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 197 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 197 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 197 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 197 M
+( setCustomerAddress\(String newAddress\) {) s
+18.6 189 M (40:) s
+35.4 189 M
+(        _customerAddress = newAddress;) s
+18.6 181 M (41:) s
+35.4 181 M
+(    }) s
+18.6 173 M (42:) s
+18.6 165 M (43:) s
+35.4 165 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 165 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 165 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 165 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 165 M
+( add\(IArticle aArticle\) {) s
+18.6 157 M (44:) s
+35.4 157 M
+(        _orderList.add\(aArticle\);) s
+18.6 149 M (45:) s
+35.4 149 M
+(    }) s
+18.6 141 M (46:) s
+18.6 133 M (47:) s
+35.4 133 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 133 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 133 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 133 M
+(int) s
+/F-gs-font 7 7 SF
+94.2 133 M
+( getTotalPrice\(\) {) s
+18.6 125 M (48:) s
+35.4 125 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 125 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 125 M
+( total = 0;) s
+18.6 117 M (49:) s
+35.4 117 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 117 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 117 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 117 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 117 M
+( i = 0; i < _orderList.size\(\); i++\) {) s
+18.6 109 M (50:) s
+35.4 109 M
+(            IArticle currentArticle = \(IArticle\) _orderList.get\(i\);) s
+18.6 101 M (51:) s
+35.4 101 M
+(            total += currentArticle.getPrice\(\);) s
+18.6 93 M (52:) s
+35.4 93 M
+(        }) s
+18.6 85 M (53:) s
+35.4 85 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 85 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 85 M
+( total;) s
+18.6 77 M (54:) s
+35.4 77 M
+(    }) s
+18.6 69 M (55:) s
+35.4 69 M
+(    ) s
+18.6 61 M (56:) s
+35.4 61 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+52.2 61 M
+(/** if this method's return type was an ArrayList we couldn't use) s
+/F-gs-font 7 7 SF
+18.6 53 M (57:) s
+/Courier-Oblique 7 7 SUF
+35.4 53 M
+(        for\(Order o : this.orders\) in Store.java's listOrders\(\). Instead we) s
+/F-gs-font 7 7 SF
+18.6 45 M (58:) s
+/Courier-Oblique 7 7 SUF
+35.4 45 M
+(        would be forced to use for\(int i = 0; i < this.orders.size\(\); i++\). */) s
+/F-gs-font 7 7 SF
+18.6 37 M (59:) s
+35.4 37 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 37 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 37 M
+( Iterable<IArticle> getOrderedArticles\(\) {) s
+18.6 29 M (60:) s
+35.4 29 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 29 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 29 M
+( _orderList;) s
+18.6 21 M (61:) s
+35.4 21 M
+(    }) s
+18.6 13 M (62:) s
+35.4 13 M
+(}) s
+_R
+S
+%%Page: (1) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (Store.java) def
+/fdir () def
+/ftail (Store.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+( Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+( Musterl??sung Aufgabe 4-2) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+35.4 477 M
+(*/) s
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+22.8 461 M (6:) s
+/Courier-Bold 7 7 SUF
+35.4 461 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 461 M
+( java.util.Scanner;) s
+22.8 453 M (7:) s
+/Courier-Bold 7 7 SUF
+35.4 453 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 453 M
+( java.util.*;) s
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 437 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 437 M
+( Store{) s
+18.6 429 M (10:) s
+35.4 429 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 429 M
+(private) s
+/F-gs-font 7 7 SF
+132 429 M
+( ArrayList<IArticle> articles = ) s
+/Courier-Bold 7 7 SUF
+266.4 429 M
+(new) s
+/F-gs-font 7 7 SF
+279 429 M
+( ArrayList<IArticle>\(\);) s
+18.6 421 M (11:) s
+35.4 421 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 421 M
+(private) s
+/F-gs-font 7 7 SF
+132 421 M
+( ArrayList<Order> orders = ) s
+/Courier-Bold 7 7 SUF
+245.4 421 M
+(new) s
+/F-gs-font 7 7 SF
+258 421 M
+( ArrayList<Order>\(\);) s
+18.6 413 M (12:) s
+35.4 413 M
+(                ) s
+18.6 405 M (13:) s
+35.4 405 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 405 M
+(/** starts the menu */) s
+/F-gs-font 7 7 SF
+18.6 397 M (14:) s
+35.4 397 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 397 M
+(public) s
+/F-gs-font 7 7 SF
+127.8 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+132 397 M
+(void) s
+/F-gs-font 7 7 SF
+148.8 397 M
+( interactWithUser\(\){) s
+18.6 389 M (15:) s
+35.4 389 M
+(                                String answer = ) s
+/Courier-Bold 7 7 SUF
+237 389 M
+("") s
+/F-gs-font 7 7 SF
+245.4 389 M
+(;) s
+18.6 381 M (16:) s
+35.4 381 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+169.8 381 M
+(while) s
+/F-gs-font 7 7 SF
+190.8 381 M
+(\(!answer.equals\() s
+/Courier-Bold 7 7 SUF
+258 381 M
+("9") s
+/F-gs-font 7 7 SF
+270.6 381 M
+(\)\){) s
+18.6 373 M (17:) s
+35.4 373 M
+(                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+316.8 373 M
+(" ===============) s
+5 365 M
+(==============================================") s
+/F-gs-font 7 7 SF
+202.4 365 M
+(\);) s
+18.6 357 M (18:) s
+35.4 357 M
+(                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+316.8 357 M
+("|               ) s
+5 349 M
+(                                              |") s
+/F-gs-font 7 7 SF
+206.6 349 M
+(\);) s
+18.6 341 M (19:) s
+35.4 341 M
+(                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+316.8 341 M
+("|  1. Create a n) s
+5 333 M
+(ew order     2. Show all registered articles  |") s
+/F-gs-font 7 7 SF
+206.6 333 M
+(\);) s
+18.6 325 M (20:) s
+35.4 325 M
+(                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+316.8 325 M
+("|  3. Show all o) s
+5 317 M
+(rders        9. Exit                          |") s
+/F-gs-font 7 7 SF
+206.6 317 M
+(\);) s
+18.6 309 M (21:) s
+35.4 309 M
+(                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+316.8 309 M
+("|               ) s
+5 301 M
+(                                              |") s
+/F-gs-font 7 7 SF
+206.6 301 M
+(\);) s
+18.6 293 M (22:) s
+35.4 293 M
+(                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+249.6 293 M
+(" ===============================) s
+5 285 M
+(==============================") s
+/F-gs-font 7 7 SF
+135.2 285 M
+(\);) s
+18.6 277 M (23:) s
+35.4 277 M
+(                                                Scanner scn = ) s
+/Courier-Bold 7 7 SUF
+295.8 277 M
+(new) s
+/F-gs-font 7 7 SF
+308.4 277 M
+( Scanner\(System.in\)) s
+5 269 M
+(;) s
+18.6 261 M (24:) s
+35.4 261 M
+(                                                System.out.print\() s
+/Courier-Bold 7 7 SUF
+308.4 261 M
+("\\nWhat do you want) s
+5 253 M
+( to do? ") s
+/F-gs-font 7 7 SF
+42.8 253 M
+(\);) s
+18.6 245 M (25:) s
+35.4 245 M
+(                                                answer = scn.nextLine\(\);) s
+18.6 237 M (26:) s
+35.4 237 M
+(                                                ) s
+/Courier-Bold 7 7 SUF
+237 237 M
+(if) s
+/F-gs-font 7 7 SF
+245.4 237 M
+(\(answer.equals\() s
+/Courier-Bold 7 7 SUF
+308.4 237 M
+("1") s
+/F-gs-font 7 7 SF
+321 237 M
+(\)\){) s
+18.6 229 M (27:) s
+35.4 229 M
+(                                                                ) s
+/Courier-Bold 7 7 SUF
+304.2 229 M
+(this) s
+/F-gs-font 7 7 SF
+321 229 M
+(.newOrder\(\);) s
+18.6 221 M (28:) s
+35.4 221 M
+(                                                }) s
+/Courier-Bold 7 7 SUF
+241.2 221 M
+(else) s
+/F-gs-font 7 7 SF
+258 221 M
+( ) s
+/Courier-Bold 7 7 SUF
+262.2 221 M
+(if) s
+/F-gs-font 7 7 SF
+270.6 221 M
+(\(answer.equals\() s
+/Courier-Bold 7 7 SUF
+333.6 221 M
+("2") s
+/F-gs-font 7 7 SF
+346.2 221 M
+(\)\){) s
+18.6 213 M (29:) s
+35.4 213 M
+(                                                                ) s
+/Courier-Bold 7 7 SUF
+304.2 213 M
+(this) s
+/F-gs-font 7 7 SF
+321 213 M
+(.listArticles\(\);) s
+18.6 205 M (30:) s
+35.4 205 M
+(                                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+384 205 M
+(") s
+5 197 M
+(") s
+/F-gs-font 7 7 SF
+9.2 197 M
+(\);) s
+18.6 189 M (31:) s
+35.4 189 M
+(                                                }) s
+/Courier-Bold 7 7 SUF
+241.2 189 M
+(else) s
+/F-gs-font 7 7 SF
+258 189 M
+( ) s
+/Courier-Bold 7 7 SUF
+262.2 189 M
+(if) s
+/F-gs-font 7 7 SF
+270.6 189 M
+(\(answer.equals\() s
+/Courier-Bold 7 7 SUF
+333.6 189 M
+("3") s
+/F-gs-font 7 7 SF
+346.2 189 M
+(\)\){) s
+18.6 181 M (32:) s
+35.4 181 M
+(                                                                ) s
+/Courier-Bold 7 7 SUF
+304.2 181 M
+(this) s
+/F-gs-font 7 7 SF
+321 181 M
+(.listOrders\(\);) s
+18.6 173 M (33:) s
+35.4 173 M
+(                                                }) s
+18.6 165 M (34:) s
+35.4 165 M
+(                                }) s
+18.6 157 M (35:) s
+35.4 157 M
+(                }) s
+18.6 149 M (36:) s
+35.4 149 M
+(                ) s
+18.6 141 M (37:) s
+35.4 141 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 141 M
+(/** Add a new article to the store */) s
+/F-gs-font 7 7 SF
+18.6 133 M (38:) s
+35.4 133 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 133 M
+(public) s
+/F-gs-font 7 7 SF
+127.8 133 M
+( ) s
+/Courier-Bold 7 7 SUF
+132 133 M
+(void) s
+/F-gs-font 7 7 SF
+148.8 133 M
+( addArticle\(IArticle a\){) s
+18.6 125 M (39:) s
+35.4 125 M
+(                                articles.add\(a\);) s
+18.6 117 M (40:) s
+35.4 117 M
+(                }) s
+18.6 109 M (41:) s
+18.6 101 M (42:) s
+35.4 101 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 101 M
+(/** Let's the user compose a new order */) s
+/F-gs-font 7 7 SF
+18.6 93 M (43:) s
+35.4 93 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 93 M
+(private) s
+/F-gs-font 7 7 SF
+132 93 M
+( ) s
+/Courier-Bold 7 7 SUF
+136.2 93 M
+(void) s
+/F-gs-font 7 7 SF
+153 93 M
+( newOrder\(\){) s
+18.6 85 M (44:) s
+35.4 85 M
+(                                Order order = ) s
+/Courier-Bold 7 7 SUF
+228.6 85 M
+(new) s
+/F-gs-font 7 7 SF
+241.2 85 M
+( Order\(\);) s
+18.6 77 M (45:) s
+35.4 77 M
+(                                listArticles\(\);) s
+18.6 69 M (46:) s
+35.4 69 M
+(                                Scanner scn = ) s
+/Courier-Bold 7 7 SUF
+228.6 69 M
+(new) s
+/F-gs-font 7 7 SF
+241.2 69 M
+( Scanner\(System.in\);) s
+18.6 61 M (47:) s
+35.4 61 M
+(                                System.out.print\() s
+/Courier-Bold 7 7 SUF
+241.2 61 M
+("\\nEnter id of ordered article \(pre) s
+5 53 M
+(ss x when done\): ") s
+/F-gs-font 7 7 SF
+80.6 53 M
+(\);) s
+18.6 45 M (48:) s
+35.4 45 M
+(                                String input = scn.nextLine\(\);) s
+18.6 37 M (49:) s
+35.4 37 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+169.8 37 M
+(while) s
+/F-gs-font 7 7 SF
+190.8 37 M
+(\(!input.equalsIgnoreCase\() s
+/Courier-Bold 7 7 SUF
+295.8 37 M
+("x") s
+/F-gs-font 7 7 SF
+308.4 37 M
+(\)\){) s
+18.6 29 M (50:) s
+35.4 29 M
+(                                                ) s
+/Courier-Bold 7 7 SUF
+237 29 M
+(int) s
+/F-gs-font 7 7 SF
+249.6 29 M
+( id = Integer.parseInt\(input\);) s
+18.6 21 M (51:) s
+35.4 21 M
+(                                                ) s
+/Courier-Bold 7 7 SUF
+237 21 M
+(if) s
+/F-gs-font 7 7 SF
+245.4 21 M
+(\(articleExists\(id\)\){) s
+18.6 13 M (52:) s
+35.4 13 M
+(                                                                ) s
+/Courier-Oblique 7 7 SUF
+304.2 13 M
+(// if it exists, the) s
+5 5 M
+(n add it to the order) s
+/F-gs-font 7 7 SF
+415.6 501 M (53:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 501 M
+(                                                                ) s
+/Courier-Bold 7 7 SUF
+701.2 501 M
+(for) s
+/F-gs-font 7 7 SF
+713.8 501 M
+(\(IArticle a : ) s
+/Courier-Bold 7 7 SUF
+772.6 501 M
+(thi) s
+402 493 M
+(s) s
+/F-gs-font 7 7 SF
+406.2 493 M
+(.articles\){) s
+415.6 485 M (54:) s
+432.4 485 M
+(                                                                                ) s
+/Courier-Bold 7 7 SUF
+768.4 485 M
+(if) s
+/F-gs-font 7 7 SF
+776.8 485 M
+( \() s
+402 477 M
+(a.getId\(\)==id\){) s
+415.6 469 M (55:) s
+432.4 469 M
+(                                                                                    ) s
+402 461 M
+(        order.add\(a\);) s
+415.6 453 M (56:) s
+432.4 453 M
+(                                                                                    ) s
+402 445 M
+(        System.out.println\() s
+/Courier-Bold 7 7 SUF
+515.4 445 M
+("Successfully added: ") s
+/F-gs-font 7 7 SF
+607.8 445 M
+(+a.getDescription\(\)\);) s
+415.6 437 M (57:) s
+432.4 437 M
+(                                                                                }) s
+415.6 429 M (58:) s
+432.4 429 M
+(                                                                }) s
+415.6 421 M (59:) s
+432.4 421 M
+(                                                }) s
+/Courier-Bold 7 7 SUF
+638.2 421 M
+(else) s
+/F-gs-font 7 7 SF
+655 421 M
+({) s
+415.6 413 M (60:) s
+432.4 413 M
+(                                                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+781 413 M
+(") s
+402 405 M
+(A medium with this id does not exist!") s
+/F-gs-font 7 7 SF
+561.6 405 M
+(\);) s
+415.6 397 M (61:) s
+432.4 397 M
+(                                                }) s
+415.6 389 M (62:) s
+432.4 389 M
+(                                                System.out.print\() s
+/Courier-Bold 7 7 SUF
+705.4 389 M
+("Enter id of ordere) s
+402 381 M
+(d article \(press x when done\): ") s
+/F-gs-font 7 7 SF
+536.4 381 M
+(\);) s
+415.6 373 M (63:) s
+432.4 373 M
+(                                                input = scn.nextLine\(\);) s
+415.6 365 M (64:) s
+432.4 365 M
+(                                }) s
+415.6 357 M (65:) s
+432.4 357 M
+(                                System.out.print\() s
+/Courier-Bold 7 7 SUF
+638.2 357 M
+("Enter the customer's name: ") s
+/F-gs-font 7 7 SF
+760 357 M
+(\);) s
+415.6 349 M (66:) s
+432.4 349 M
+(                                order.setCustomerName\(scn.nextLine\(\)\);) s
+415.6 341 M (67:) s
+432.4 341 M
+(                                System.out.print\() s
+/Courier-Bold 7 7 SUF
+638.2 341 M
+("Enter the customer's address: ") s
+/F-gs-font 7 7 SF
+772.6 341 M
+(\);) s
+415.6 333 M (68:) s
+432.4 333 M
+(                                order.setCustomerAddress\(scn.nextLine\(\)\);) s
+415.6 325 M (69:) s
+432.4 325 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+566.8 325 M
+(this) s
+/F-gs-font 7 7 SF
+583.6 325 M
+(.orders.add\(order\);) s
+415.6 317 M (70:) s
+432.4 317 M
+(                }) s
+415.6 309 M (71:) s
+432.4 309 M
+(                ) s
+415.6 301 M (72:) s
+432.4 301 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+499.6 301 M
+(/** checks if an article with the given id exists */) s
+/F-gs-font 7 7 SF
+415.6 293 M (73:) s
+432.4 293 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 293 M
+(private) s
+/F-gs-font 7 7 SF
+529 293 M
+( ) s
+/Courier-Bold 7 7 SUF
+533.2 293 M
+(boolean) s
+/F-gs-font 7 7 SF
+562.6 293 M
+( articleExists\() s
+/Courier-Bold 7 7 SUF
+625.6 293 M
+(int) s
+/F-gs-font 7 7 SF
+638.2 293 M
+( id\){) s
+415.6 285 M (74:) s
+432.4 285 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+566.8 285 M
+(for) s
+/F-gs-font 7 7 SF
+579.4 285 M
+(\(IArticle a : ) s
+/Courier-Bold 7 7 SUF
+638.2 285 M
+(this) s
+/F-gs-font 7 7 SF
+655 285 M
+(.articles\){) s
+415.6 277 M (75:) s
+432.4 277 M
+(                                                ) s
+/Courier-Bold 7 7 SUF
+634 277 M
+(if) s
+/F-gs-font 7 7 SF
+642.4 277 M
+( \(a.getId\(\)==id\) ) s
+/Courier-Bold 7 7 SUF
+713.8 277 M
+(return) s
+/F-gs-font 7 7 SF
+739 277 M
+( ) s
+/Courier-Bold 7 7 SUF
+743.2 277 M
+(true) s
+/F-gs-font 7 7 SF
+760 277 M
+(;) s
+415.6 269 M (76:) s
+432.4 269 M
+(                                }) s
+415.6 261 M (77:) s
+432.4 261 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+566.8 261 M
+(return) s
+/F-gs-font 7 7 SF
+592 261 M
+( ) s
+/Courier-Bold 7 7 SUF
+596.2 261 M
+(false) s
+/F-gs-font 7 7 SF
+617.2 261 M
+(;) s
+415.6 253 M (78:) s
+432.4 253 M
+(                }) s
+415.6 245 M (79:) s
+432.4 245 M
+(                ) s
+415.6 237 M (80:) s
+432.4 237 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+499.6 237 M
+(/** Output all registered media on the screen */) s
+/F-gs-font 7 7 SF
+415.6 229 M (81:) s
+432.4 229 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 229 M
+(private) s
+/F-gs-font 7 7 SF
+529 229 M
+( ) s
+/Courier-Bold 7 7 SUF
+533.2 229 M
+(void) s
+/F-gs-font 7 7 SF
+550 229 M
+( listArticles\(\){) s
+415.6 221 M (82:) s
+432.4 221 M
+(                                System.out.println\() s
+/Courier-Bold 7 7 SUF
+646.6 221 M
+("") s
+/F-gs-font 7 7 SF
+655 221 M
+(\);) s
+415.6 213 M (83:) s
+432.4 213 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+566.8 213 M
+(for) s
+/F-gs-font 7 7 SF
+579.4 213 M
+(\(IArticle a : ) s
+/Courier-Bold 7 7 SUF
+638.2 213 M
+(this) s
+/F-gs-font 7 7 SF
+655 213 M
+(.articles\){) s
+415.6 205 M (84:) s
+432.4 205 M
+(                                                System.out.println\(a.getDescription\() s
+402 197 M
+(\)\);) s
+415.6 189 M (85:) s
+432.4 189 M
+(                                }) s
+415.6 181 M (86:) s
+432.4 181 M
+(                }) s
+415.6 173 M (87:) s
+432.4 173 M
+(                ) s
+415.6 165 M (88:) s
+432.4 165 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+499.6 165 M
+(/** Output all orders on the screen */) s
+/F-gs-font 7 7 SF
+415.6 157 M (89:) s
+432.4 157 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 157 M
+(private) s
+/F-gs-font 7 7 SF
+529 157 M
+( ) s
+/Courier-Bold 7 7 SUF
+533.2 157 M
+(void) s
+/F-gs-font 7 7 SF
+550 157 M
+( listOrders\(\){) s
+415.6 149 M (90:) s
+432.4 149 M
+(                                ) s
+/Courier-Bold 7 7 SUF
+566.8 149 M
+(for) s
+/F-gs-font 7 7 SF
+579.4 149 M
+(\(Order o : ) s
+/Courier-Bold 7 7 SUF
+625.6 149 M
+(this) s
+/F-gs-font 7 7 SF
+642.4 149 M
+(.orders\){) s
+415.6 141 M (91:) s
+432.4 141 M
+(                                                String order = ) s
+/Courier-Bold 7 7 SUF
+697 141 M
+("\\nOrder No. ") s
+/F-gs-font 7 7 SF
+755.8 141 M
+(+o.getI) s
+402 133 M
+(d\(\)+) s
+/Courier-Bold 7 7 SUF
+418.8 133 M
+(" for: ") s
+/F-gs-font 7 7 SF
+452.4 133 M
+( + o.getCustomerName\(\)+) s
+/Courier-Bold 7 7 SUF
+549 133 M
+(", ") s
+/F-gs-font 7 7 SF
+415.6 125 M (92:) s
+432.4 125 M
+(                                                +o.getCustomerAddress\(\)+) s
+/Courier-Bold 7 7 SUF
+734.8 125 M
+("\\n") s
+/F-gs-font 7 7 SF
+751.6 125 M
+(;) s
+415.6 117 M (93:) s
+432.4 117 M
+(                                                ) s
+/Courier-Bold 7 7 SUF
+634 117 M
+(for) s
+/F-gs-font 7 7 SF
+646.6 117 M
+(\(IArticle a : o.getOrderedArticle) s
+402 109 M
+(s\(\)\){) s
+415.6 101 M (94:) s
+432.4 101 M
+(                                                                order += ) s
+/Courier-Bold 7 7 SUF
+739 101 M
+("* ") s
+/F-gs-font 7 7 SF
+755.8 101 M
+(+a.getD) s
+402 93 M
+(escription\(\)+) s
+/Courier-Bold 7 7 SUF
+456.6 93 M
+("\\n") s
+/F-gs-font 7 7 SF
+473.4 93 M
+(;) s
+415.6 85 M (95:) s
+432.4 85 M
+(                                                }) s
+415.6 77 M (96:) s
+432.4 77 M
+(                                                order += ) s
+/Courier-Bold 7 7 SUF
+671.8 77 M
+("--------------------------) s
+402 69 M
+(--------------------------\\n") s
+/F-gs-font 7 7 SF
+523.8 69 M
+(;) s
+415.6 61 M (97:) s
+432.4 61 M
+(                                                order += ) s
+/Courier-Bold 7 7 SUF
+671.8 61 M
+("Total price: ") s
+/F-gs-font 7 7 SF
+734.8 61 M
+(+o.getTotalP) s
+402 53 M
+(rice\(\)+) s
+/Courier-Bold 7 7 SUF
+431.4 53 M
+(" CHF\\n") s
+/F-gs-font 7 7 SF
+465 53 M
+(;) s
+415.6 45 M (98:) s
+432.4 45 M
+(                                                order += ) s
+/Courier-Bold 7 7 SUF
+671.8 45 M
+("==========================) s
+402 37 M
+(==========================\\n") s
+/F-gs-font 7 7 SF
+523.8 37 M
+(;) s
+415.6 29 M (99:) s
+432.4 29 M
+(                                                System.out.println\(order\);) s
+411.4 21 M (100:) s
+432.4 21 M
+(                                }) s
+411.4 13 M (101:) s
+432.4 13 M
+(                }) s
+411.4 5 M (102:) s
+432.4 5 M
+(                ) s
+_R
+S
+%%Page: (2) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 2 def
+/fname (Store.java) def
+/fdir () def
+/ftail (Store.java) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (11/24/11) def
+/modtimestr (14:31:26) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+14.4 501 M (103:) s
+35.4 501 M
+(                ) s
+14.4 493 M (104:) s
+35.4 493 M
+(                ) s
+/Courier-Oblique 7 7 SUF
+102.6 493 M
+(/** Registers some objects and starts the program */) s
+/F-gs-font 7 7 SF
+14.4 485 M (105:) s
+35.4 485 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 485 M
+(public) s
+/F-gs-font 7 7 SF
+127.8 485 M
+( ) s
+/Courier-Bold 7 7 SUF
+132 485 M
+(static) s
+/F-gs-font 7 7 SF
+157.2 485 M
+( ) s
+/Courier-Bold 7 7 SUF
+161.4 485 M
+(void) s
+/F-gs-font 7 7 SF
+178.2 485 M
+( main\(String[] args\) ) s
+/Courier-Bold 7 7 SUF
+266.4 485 M
+(throws) s
+/F-gs-font 7 7 SF
+291.6 485 M
+( java.text.ParseExcepti) s
+5 477 M
+(on{) s
+14.4 469 M (106:) s
+35.4 469 M
+(                                Store store = ) s
+/Courier-Bold 7 7 SUF
+228.6 469 M
+(new) s
+/F-gs-font 7 7 SF
+241.2 469 M
+( Store\(\);) s
+14.4 461 M (107:) s
+35.4 461 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 461 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 461 M
+( Book\(1, ) s
+/Courier-Bold 7 7 SUF
+291.6 461 M
+("Die Blechtrommel") s
+/F-gs-font 7 7 SF
+367.2 461 M
+(, ) s
+/Courier-Bold 7 7 SUF
+375.6 461 M
+("G?) s
+5 453 M
+(?nter Grass") s
+/F-gs-font 7 7 SF
+55.4 453 M
+(, 1959, 29\)\);) s
+14.4 445 M (108:) s
+35.4 445 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 445 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 445 M
+( Book\(2, ) s
+/Courier-Bold 7 7 SUF
+291.6 445 M
+("Andorra") s
+/F-gs-font 7 7 SF
+329.4 445 M
+(, ) s
+/Courier-Bold 7 7 SUF
+337.8 445 M
+("Max Frisch") s
+/F-gs-font 7 7 SF
+388.2 445 M
+() s
+5 437 M
+(, 1961, 39\)\);) s
+14.4 429 M (109:) s
+35.4 429 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 429 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 429 M
+( Book\(3, ) s
+/Courier-Bold 7 7 SUF
+291.6 429 M
+("L'Etranger") s
+/F-gs-font 7 7 SF
+342 429 M
+(, ) s
+/Courier-Bold 7 7 SUF
+350.4 429 M
+("Albert C) s
+5 421 M
+(amus") s
+/F-gs-font 7 7 SF
+26 421 M
+(, 1942, 25\)\);) s
+14.4 413 M (110:) s
+35.4 413 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 413 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 413 M
+( DVD\(4, ) s
+/Courier-Bold 7 7 SUF
+287.4 413 M
+("Casablanca") s
+/F-gs-font 7 7 SF
+337.8 413 M
+(, 1942, 29\)\)) s
+5 405 M
+(;) s
+14.4 397 M (111:) s
+35.4 397 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 397 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 397 M
+( DVD\(5, ) s
+/Courier-Bold 7 7 SUF
+287.4 397 M
+("Into the wild") s
+/F-gs-font 7 7 SF
+350.4 397 M
+(, 2007, 3) s
+5 389 M
+(8\)\);) s
+14.4 381 M (112:) s
+35.4 381 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 381 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 381 M
+( CD\(6, ) s
+/Courier-Bold 7 7 SUF
+283.2 381 M
+("Nevermind") s
+/F-gs-font 7 7 SF
+329.4 381 M
+(, ) s
+/Courier-Bold 7 7 SUF
+337.8 381 M
+("Nirvana") s
+/F-gs-font 7 7 SF
+375.6 381 M
+(, 1) s
+5 373 M
+(991, 19\)\);) s
+14.4 365 M (113:) s
+35.4 365 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 365 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 365 M
+( CD\(7, ) s
+/Courier-Bold 7 7 SUF
+283.2 365 M
+("Thriller") s
+/F-gs-font 7 7 SF
+325.2 365 M
+(, ) s
+/Courier-Bold 7 7 SUF
+333.6 365 M
+("Michael Jack) s
+5 357 M
+(son") s
+/F-gs-font 7 7 SF
+21.8 357 M
+(, 1982, 18\)\);) s
+14.4 349 M (114:) s
+35.4 349 M
+(                                store.addArticle\() s
+/Courier-Bold 7 7 SUF
+241.2 349 M
+(new) s
+/F-gs-font 7 7 SF
+253.8 349 M
+( CD\(8, ) s
+/Courier-Bold 7 7 SUF
+283.2 349 M
+("...Baby One More Time") s
+/F-gs-font 7 7 SF
+379.8 349 M
+(, ) s
+/Courier-Bold 7 7 SUF
+388.2 349 M
+() s
+5 341 M
+("Britney Spears") s
+/F-gs-font 7 7 SF
+72.2 341 M
+(, 1999, 50\)\);) s
+14.4 333 M (115:) s
+14.4 325 M (116:) s
+35.4 325 M
+(                                store.interactWithUser\(\);) s
+14.4 317 M (117:) s
+35.4 317 M
+(                }) s
+14.4 309 M (118:) s
+35.4 309 M
+(}) s
+_R
+S
+%%Trailer
+%%Pages: 7
+%%DocumentNeededResources: font Times-Roman Courier-Oblique Courier-Bold 
+%%+ font Courier Times-Bold 
+%%EOF
