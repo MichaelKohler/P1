@@ -1,0 +1,5340 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 24 24 571 818
+%%Title: Enscript Output
+%%For: Lukas
+%%Creator: GNU enscript 1.6.3
+%%CreationDate: Thu Nov 24 15:19:45 2011
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 3
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88592 1.6 3
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/Aogonek      	/breve        	/Lslash       	
+/currency     	/Lcaron       	/Sacute       	/section      	
+/dieresis     	/Scaron       	/Scedilla     	/Tcaron       	
+/Zacute       	/hyphen       	/Zcaron       	/Zdotaccent   	
+/degree       	/aogonek      	/ogonek       	/lslash       	
+/acute        	/lcaron       	/sacute       	/caron        	
+/cedilla      	/scaron       	/scedilla     	/tcaron       	
+/zacute       	/hungarumlaut 	/zcaron       	/zdotaccent   	
+/Racute       	/Aacute       	/Acircumflex  	/Abreve       	
+/Adieresis    	/Lacute       	/Cacute       	/Ccedilla     	
+/Ccaron       	/Eacute       	/Eogonek      	/Edieresis    	
+/Ecaron       	/Iacute       	/Icircumflex  	/Dcaron       	
+/Eth          	/Nacute       	/Ncaron       	/Oacute       	
+/Ocircumflex  	/Ohungarumlaut	/Odieresis    	/multiply     	
+/Rcaron       	/Uring        	/Uacute       	/Uhungarumlaut	
+/Udieresis    	/Yacute       	/Tcedilla     	/germandbls   	
+/racute       	/aacute       	/acircumflex  	/abreve       	
+/adieresis    	/lacute       	/cacute       	/ccedilla     	
+/ccaron       	/eacute       	/eogonek      	/edieresis    	
+/ecaron       	/iacute       	/icircumflex  	/dcaron       	
+/dbar         	/nacute       	/ncaron       	/oacute       	
+/ocircumflex  	/ohungarumlaut	/odieresis    	/divide       	
+/rcaron       	/uring        	/uacute       	/uhungarumlaut	
+/udieresis    	/yacute       	/tcedilla     	/dotaccent    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6 3
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 794 def
+/d_page_h 547 def
+/d_header_x 0 def
+/d_header_y 511 def
+/d_header_w 794 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 794 def
+/d_footer_h 0 def
+/d_output_w 794 def
+/d_output_h 511 def
+/cols 2 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (ComputerPlayer.java) def
+/fdir () def
+/ftail (ComputerPlayer.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (14:18:32) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+(Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+(Aufgabe 4-1) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+(Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+(Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+( */) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Oblique 7 7 SUF
+35.4 437 M
+(/** A very stupid computer player */) s
+/F-gs-font 7 7 SF
+18.6 429 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 429 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 429 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 429 M
+( ComputerPlayer ) s
+/Courier-Bold 7 7 SUF
+153 429 M
+(implements) s
+/F-gs-font 7 7 SF
+195 429 M
+( IPlayer {) s
+18.6 421 M (11:) s
+18.6 413 M (12:) s
+35.4 413 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 413 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 413 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 413 M
+(boolean) s
+/F-gs-font 7 7 SF
+140.4 413 M
+( aboutToWin;) s
+18.6 405 M (13:) s
+35.4 405 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 405 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 405 M
+( VierGewinnt.Token token;) s
+18.6 397 M (14:) s
+35.4 397 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 397 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 397 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 397 M
+(final) s
+/F-gs-font 7 7 SF
+132 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+136.2 397 M
+(int) s
+/F-gs-font 7 7 SF
+148.8 397 M
+( maxScore = 100;                     ) s
+/Courier-Oblique 7 7 SUF
+304.2 397 M
+(//max score for fiel) s
+5 389 M
+(d) s
+/F-gs-font 7 7 SF
+18.6 381 M (15:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 381 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 381 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 381 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 381 M
+(final) s
+/F-gs-font 7 7 SF
+132 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+136.2 381 M
+(int) s
+/F-gs-font 7 7 SF
+148.8 381 M
+( invalidScore = 1000000;         ) s
+/Courier-Oblique 7 7 SUF
+287.4 381 M
+(//invalid score) s
+/F-gs-font 7 7 SF
+18.6 373 M (16:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 373 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 373 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 373 M
+(static) s
+/F-gs-font 7 7 SF
+111 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 373 M
+(boolean) s
+/F-gs-font 7 7 SF
+144.6 373 M
+( useEvaluationFunction = ) s
+/Courier-Bold 7 7 SUF
+249.6 373 M
+(true) s
+/F-gs-font 7 7 SF
+266.4 373 M
+(;) s
+18.6 365 M (17:) s
+35.4 365 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 365 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 365 M
+(static) s
+/F-gs-font 7 7 SF
+111 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 365 M
+(int) s
+/F-gs-font 7 7 SF
+127.8 365 M
+( maxDepth = 8;) s
+18.6 357 M (18:) s
+35.4 357 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 357 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 357 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 357 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 357 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 357 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 357 M
+([] moveScore = ) s
+/Courier-Bold 7 7 SUF
+186.6 357 M
+(new) s
+/F-gs-font 7 7 SF
+199.2 357 M
+( ) s
+/Courier-Bold 7 7 SUF
+203.4 357 M
+(int) s
+/F-gs-font 7 7 SF
+216 357 M
+([VierGewinnt.COLS];) s
+18.6 349 M (19:) s
+18.6 341 M (20:) s
+35.4 341 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 341 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 341 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 341 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 341 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 341 M
+(void) s
+/F-gs-font 7 7 SF
+127.8 341 M
+( main\(String args[]\) {) s
+18.6 333 M (21:) s
+35.4 333 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 333 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 333 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 333 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 333 M
+( x = 0; x < VierGewinnt.COLS; ++x\) {) s
+18.6 325 M (22:) s
+35.4 325 M
+(            moveScore[x] = 0;) s
+18.6 317 M (23:) s
+35.4 317 M
+(        }) s
+18.6 309 M (24:) s
+35.4 309 M
+(    }) s
+18.6 301 M (25:) s
+18.6 293 M (26:) s
+35.4 293 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 293 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 293 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 293 M
+(int) s
+/F-gs-font 7 7 SF
+94.2 293 M
+( getNextColumn\(VierGewinnt.Token[][] board\) {) s
+18.6 285 M (27:) s
+35.4 285 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 285 M
+(/*java.util.Random generator = new java.util.Random\(\);) s
+/F-gs-font 7 7 SF
+18.6 277 M (28:) s
+/Courier-Oblique 7 7 SUF
+35.4 277 M
+(        boolean columnOK = false;) s
+/F-gs-font 7 7 SF
+18.6 269 M (29:) s
+/Courier-Oblique 7 7 SUF
+35.4 269 M
+(        int col = 0;) s
+/F-gs-font 7 7 SF
+18.6 261 M (30:) s
+/Courier-Oblique 7 7 SUF
+35.4 261 M
+(        while\(!columnOK\){) s
+/F-gs-font 7 7 SF
+18.6 253 M (31:) s
+/Courier-Oblique 7 7 SUF
+35.4 253 M
+(        // random number between 0 and 6) s
+/F-gs-font 7 7 SF
+18.6 245 M (32:) s
+/Courier-Oblique 7 7 SUF
+35.4 245 M
+(        col = generator.nextInt\(board.length\);) s
+/F-gs-font 7 7 SF
+18.6 237 M (33:) s
+/Courier-Oblique 7 7 SUF
+35.4 237 M
+(        // check if this column is still "free") s
+/F-gs-font 7 7 SF
+18.6 229 M (34:) s
+/Courier-Oblique 7 7 SUF
+35.4 229 M
+(        if\(isColFull\(col, board\) == false\) columnOK = true;) s
+/F-gs-font 7 7 SF
+18.6 221 M (35:) s
+/Courier-Oblique 7 7 SUF
+35.4 221 M
+(        // if not, we have to generate another random number) s
+/F-gs-font 7 7 SF
+18.6 213 M (36:) s
+/Courier-Oblique 7 7 SUF
+35.4 213 M
+(        else columnOK = false;) s
+/F-gs-font 7 7 SF
+18.6 205 M (37:) s
+/Courier-Oblique 7 7 SUF
+35.4 205 M
+(        }) s
+/F-gs-font 7 7 SF
+18.6 197 M (38:) s
+/Courier-Oblique 7 7 SUF
+35.4 197 M
+(        return col;*/) s
+/F-gs-font 7 7 SF
+18.6 189 M (39:) s
+35.4 189 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 189 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 189 M
+( determineMove\() s
+/Courier-Bold 7 7 SUF
+157.2 189 M
+('X') s
+/F-gs-font 7 7 SF
+169.8 189 M
+(\);) s
+18.6 181 M (40:) s
+18.6 173 M (41:) s
+35.4 173 M
+(    }) s
+18.6 165 M (42:) s
+18.6 157 M (43:) s
+35.4 157 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+52.2 157 M
+(/** returns true if the column col is already full and false otherwise. */) s
+/F-gs-font 7 7 SF
+18.6 149 M (44:) s
+35.4 149 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 149 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 149 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 149 M
+(boolean) s
+/F-gs-font 7 7 SF
+115.2 149 M
+( isColFull\() s
+/Courier-Bold 7 7 SUF
+161.4 149 M
+(int) s
+/F-gs-font 7 7 SF
+174 149 M
+( col, VierGewinnt.Token[][] board\) {) s
+18.6 141 M (45:) s
+35.4 141 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 141 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 141 M
+( topRow = board[0].length - 1;) s
+18.6 133 M (46:) s
+35.4 133 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 133 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 133 M
+( \(board[col][topRow] != VierGewinnt.Token.empty\) {) s
+18.6 125 M (47:) s
+35.4 125 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 125 M
+(return) s
+/F-gs-font 7 7 SF
+111 125 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 125 M
+(true) s
+/F-gs-font 7 7 SF
+132 125 M
+(;) s
+18.6 117 M (48:) s
+35.4 117 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+77.4 117 M
+(else) s
+/F-gs-font 7 7 SF
+94.2 117 M
+( {) s
+18.6 109 M (49:) s
+35.4 109 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 109 M
+(return) s
+/F-gs-font 7 7 SF
+111 109 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 109 M
+(false) s
+/F-gs-font 7 7 SF
+136.2 109 M
+(;) s
+18.6 101 M (50:) s
+35.4 101 M
+(        }) s
+18.6 93 M (51:) s
+35.4 93 M
+(    }) s
+18.6 85 M (52:) s
+18.6 77 M (53:) s
+35.4 77 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 77 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 77 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 77 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 77 M
+( setToken\(VierGewinnt.Token token\) {) s
+18.6 69 M (54:) s
+35.4 69 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 69 M
+(this) s
+/F-gs-font 7 7 SF
+85.8 69 M
+(.token = token;) s
+18.6 61 M (55:) s
+35.4 61 M
+(    }) s
+18.6 53 M (56:) s
+18.6 45 M (57:) s
+35.4 45 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 45 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 45 M
+( VierGewinnt.Token getToken\(\) {) s
+18.6 37 M (58:) s
+35.4 37 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 37 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 37 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 37 M
+(this) s
+/F-gs-font 7 7 SF
+115.2 37 M
+(.token;) s
+18.6 29 M (59:) s
+35.4 29 M
+(    }) s
+18.6 21 M (60:) s
+18.6 13 M (61:) s
+35.4 13 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 13 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 13 M
+( String getProgrammers\(\) {) s
+18.6 5 M (62:) s
+35.4 5 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 5 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 5 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 5 M
+("Lukas Diener, Michael Kohler") s
+/F-gs-font 7 7 SF
+224.4 5 M
+(;) s
+415.6 501 M (63:) s
+432.4 501 M
+(    }) s
+415.6 493 M (64:) s
+415.6 485 M (65:) s
+432.4 485 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 485 M
+(private) s
+/F-gs-font 7 7 SF
+478.6 485 M
+( ) s
+/Courier-Bold 7 7 SUF
+482.8 485 M
+(static) s
+/F-gs-font 7 7 SF
+508 485 M
+( ) s
+/Courier-Bold 7 7 SUF
+512.2 485 M
+(int) s
+/F-gs-font 7 7 SF
+524.8 485 M
+( alphabeta\() s
+/Courier-Bold 7 7 SUF
+571 485 M
+(char) s
+/F-gs-font 7 7 SF
+587.8 485 M
+( player\) {) s
+415.6 477 M (66:) s
+432.4 477 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 477 M
+(return) s
+/F-gs-font 7 7 SF
+491.2 477 M
+( alphabeta\(player, -invalidScore, invalidScore, 0\);) s
+415.6 469 M (67:) s
+432.4 469 M
+(    }) s
+415.6 461 M (68:) s
+415.6 453 M (69:) s
+432.4 453 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 453 M
+(private) s
+/F-gs-font 7 7 SF
+478.6 453 M
+( ) s
+/Courier-Bold 7 7 SUF
+482.8 453 M
+(static) s
+/F-gs-font 7 7 SF
+508 453 M
+( ) s
+/Courier-Bold 7 7 SUF
+512.2 453 M
+(int) s
+/F-gs-font 7 7 SF
+524.8 453 M
+( alphabeta\() s
+/Courier-Bold 7 7 SUF
+571 453 M
+(char) s
+/F-gs-font 7 7 SF
+587.8 453 M
+( player, ) s
+/Courier-Bold 7 7 SUF
+625.6 453 M
+(int) s
+/F-gs-font 7 7 SF
+638.2 453 M
+( alpha, ) s
+/Courier-Bold 7 7 SUF
+671.8 453 M
+(int) s
+/F-gs-font 7 7 SF
+684.4 453 M
+( beta, ) s
+/Courier-Bold 7 7 SUF
+713.8 453 M
+(int) s
+/F-gs-font 7 7 SF
+726.4 453 M
+( depth\) {) s
+415.6 445 M (70:) s
+432.4 445 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 445 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 445 M
+( width = VierGewinnt.COLS;) s
+415.6 437 M (71:) s
+432.4 437 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 437 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 437 M
+( height = VierGewinnt.ROWS;) s
+415.6 429 M (72:) s
+432.4 429 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 429 M
+(//Check if there's a current winner) s
+/F-gs-font 7 7 SF
+415.6 421 M (73:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 421 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 421 M
+(char) s
+/F-gs-font 7 7 SF
+482.8 421 M
+( winner = VierGewinnt.checkWin\(VierGewinnt.lastX, VierGewinnt.lastY\);) s
+415.6 413 M (74:) s
+432.4 413 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 413 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 413 M
+( \(winner == ) s
+/Courier-Bold 7 7 SUF
+524.8 413 M
+('X') s
+/F-gs-font 7 7 SF
+537.4 413 M
+(\) {) s
+415.6 405 M (75:) s
+432.4 405 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 405 M
+(return) s
+/F-gs-font 7 7 SF
+508 405 M
+( maxScore;) s
+415.6 397 M (76:) s
+432.4 397 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 397 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+495.4 397 M
+(if) s
+/F-gs-font 7 7 SF
+503.8 397 M
+( \(winner == ) s
+/Courier-Bold 7 7 SUF
+554.2 397 M
+('O') s
+/F-gs-font 7 7 SF
+566.8 397 M
+(\) {) s
+415.6 389 M (77:) s
+432.4 389 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 389 M
+(return) s
+/F-gs-font 7 7 SF
+508 389 M
+( -maxScore;) s
+415.6 381 M (78:) s
+432.4 381 M
+(        }) s
+415.6 373 M (79:) s
+415.6 365 M (80:) s
+432.4 365 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 365 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 365 M
+( \(depth >= maxDepth\) {) s
+415.6 357 M (81:) s
+432.4 357 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 357 M
+(//We cannot recurse more, and we haven't found) s
+/F-gs-font 7 7 SF
+415.6 349 M (82:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 349 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 349 M
+(//an end to the game) s
+/F-gs-font 7 7 SF
+415.6 341 M (83:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 341 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 341 M
+(//Return the score of the current table) s
+/F-gs-font 7 7 SF
+415.6 333 M (84:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 333 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 333 M
+(if) s
+/F-gs-font 7 7 SF
+491.2 333 M
+( \(useEvaluationFunction\) {) s
+415.6 325 M (85:) s
+432.4 325 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 325 M
+(return) s
+/F-gs-font 7 7 SF
+524.8 325 M
+( VierGewinnt.getScore\(\);) s
+415.6 317 M (86:) s
+432.4 317 M
+(            } ) s
+/Courier-Bold 7 7 SUF
+491.2 317 M
+(else) s
+/F-gs-font 7 7 SF
+508 317 M
+( {) s
+415.6 309 M (87:) s
+432.4 309 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 309 M
+(return) s
+/F-gs-font 7 7 SF
+524.8 309 M
+( 0;) s
+415.6 301 M (88:) s
+432.4 301 M
+(            }) s
+415.6 293 M (89:) s
+432.4 293 M
+(        }) s
+415.6 285 M (90:) s
+415.6 277 M (91:) s
+432.4 277 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 277 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 277 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+524.8 277 M
+('X') s
+/F-gs-font 7 7 SF
+537.4 277 M
+(\) {) s
+415.6 269 M (92:) s
+432.4 269 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 269 M
+(//It is player X's turn, he will try to) s
+/F-gs-font 7 7 SF
+415.6 261 M (93:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 261 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 261 M
+(//maximize the score) s
+/F-gs-font 7 7 SF
+415.6 253 M (94:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+415.6 245 M (95:) s
+432.4 245 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 245 M
+(//Go through all possible moves and get the) s
+/F-gs-font 7 7 SF
+415.6 237 M (96:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 237 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 237 M
+(//scores) s
+/F-gs-font 7 7 SF
+415.6 229 M (97:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 229 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 229 M
+(int) s
+/F-gs-font 7 7 SF
+495.4 229 M
+( maxScore = -invalidScore;) s
+415.6 221 M (98:) s
+432.4 221 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 221 M
+(for) s
+/F-gs-font 7 7 SF
+495.4 221 M
+( \() s
+/Courier-Bold 7 7 SUF
+503.8 221 M
+(int) s
+/F-gs-font 7 7 SF
+516.4 221 M
+( move = 0; move < width; ++move\) {) s
+415.6 213 M (99:) s
+432.4 213 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 213 M
+(if) s
+/F-gs-font 7 7 SF
+508 213 M
+( \(VierGewinnt.canMove\(move\)\) {) s
+411.4 205 M (100:) s
+432.4 205 M
+(                    VierGewinnt.move\(move, ) s
+/Courier-Bold 7 7 SUF
+613 205 M
+('X') s
+/F-gs-font 7 7 SF
+625.6 205 M
+(\);) s
+411.4 197 M (101:) s
+432.4 197 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+516.4 197 M
+(int) s
+/F-gs-font 7 7 SF
+529 197 M
+( score = alphabeta\() s
+/Courier-Bold 7 7 SUF
+608.8 197 M
+('O') s
+/F-gs-font 7 7 SF
+621.4 197 M
+(, alpha, beta, depth + 1\);) s
+411.4 189 M (102:) s
+432.4 189 M
+(                    VierGewinnt.undo\(move, ) s
+/Courier-Bold 7 7 SUF
+613 189 M
+('X') s
+/F-gs-font 7 7 SF
+625.6 189 M
+(\);) s
+411.4 181 M (103:) s
+432.4 181 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+516.4 181 M
+(if) s
+/F-gs-font 7 7 SF
+524.8 181 M
+( \(score > alpha\) {) s
+411.4 173 M (104:) s
+432.4 173 M
+(                        alpha = score;) s
+411.4 165 M (105:) s
+432.4 165 M
+(                    }) s
+411.4 157 M (106:) s
+432.4 157 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+516.4 157 M
+(if) s
+/F-gs-font 7 7 SF
+524.8 157 M
+( \(alpha >= beta\) {) s
+411.4 149 M (107:) s
+432.4 149 M
+(                        ) s
+/Courier-Bold 7 7 SUF
+533.2 149 M
+(return) s
+/F-gs-font 7 7 SF
+558.4 149 M
+( alpha;) s
+411.4 141 M (108:) s
+432.4 141 M
+(                    }) s
+411.4 133 M (109:) s
+432.4 133 M
+(                }) s
+411.4 125 M (110:) s
+432.4 125 M
+(            }) s
+411.4 117 M (111:) s
+432.4 117 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 117 M
+(return) s
+/F-gs-font 7 7 SF
+508 117 M
+( alpha;) s
+411.4 109 M (112:) s
+432.4 109 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 109 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 109 M
+( ) s
+/Courier-Bold 7 7 SUF
+495.4 109 M
+(if) s
+/F-gs-font 7 7 SF
+503.8 109 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+554.2 109 M
+('O') s
+/F-gs-font 7 7 SF
+566.8 109 M
+(\) {) s
+411.4 101 M (113:) s
+432.4 101 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 101 M
+(//It is player X's turn, he will try to) s
+/F-gs-font 7 7 SF
+411.4 93 M (114:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 93 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 93 M
+(//maximize the score) s
+/F-gs-font 7 7 SF
+411.4 85 M (115:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+411.4 77 M (116:) s
+432.4 77 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 77 M
+(//Go through all possible moves and get the) s
+/F-gs-font 7 7 SF
+411.4 69 M (117:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 69 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 69 M
+(//scores) s
+/F-gs-font 7 7 SF
+411.4 61 M (118:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 61 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 61 M
+(int) s
+/F-gs-font 7 7 SF
+495.4 61 M
+( minScore = invalidScore;) s
+411.4 53 M (119:) s
+432.4 53 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 53 M
+(for) s
+/F-gs-font 7 7 SF
+495.4 53 M
+( \() s
+/Courier-Bold 7 7 SUF
+503.8 53 M
+(int) s
+/F-gs-font 7 7 SF
+516.4 53 M
+( move = 0; move < VierGewinnt.COLS; ++move\) {) s
+411.4 45 M (120:) s
+432.4 45 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 45 M
+(if) s
+/F-gs-font 7 7 SF
+508 45 M
+( \(VierGewinnt.canMove\(move\)\) {) s
+411.4 37 M (121:) s
+432.4 37 M
+(                    VierGewinnt.move\(move, ) s
+/Courier-Bold 7 7 SUF
+613 37 M
+('O') s
+/F-gs-font 7 7 SF
+625.6 37 M
+(\);) s
+411.4 29 M (122:) s
+432.4 29 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+516.4 29 M
+(int) s
+/F-gs-font 7 7 SF
+529 29 M
+( score = alphabeta\() s
+/Courier-Bold 7 7 SUF
+608.8 29 M
+('X') s
+/F-gs-font 7 7 SF
+621.4 29 M
+(, alpha, beta, depth + 1\);) s
+411.4 21 M (123:) s
+432.4 21 M
+(                    VierGewinnt.undo\(move, ) s
+/Courier-Bold 7 7 SUF
+613 21 M
+('O') s
+/F-gs-font 7 7 SF
+625.6 21 M
+(\);) s
+411.4 13 M (124:) s
+432.4 13 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+516.4 13 M
+(if) s
+/F-gs-font 7 7 SF
+524.8 13 M
+( \(score < beta\) {) s
+411.4 5 M (125:) s
+432.4 5 M
+(                        beta = score;) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 2 def
+/fname (ComputerPlayer.java) def
+/fdir () def
+/ftail (ComputerPlayer.java) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (11/24/11) def
+/modtimestr (14:18:32) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+14.4 501 M (126:) s
+35.4 501 M
+(                    }) s
+14.4 493 M (127:) s
+35.4 493 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 493 M
+(if) s
+/F-gs-font 7 7 SF
+127.8 493 M
+( \(alpha >= beta\) {) s
+14.4 485 M (128:) s
+35.4 485 M
+(                        ) s
+/Courier-Bold 7 7 SUF
+136.2 485 M
+(return) s
+/F-gs-font 7 7 SF
+161.4 485 M
+( beta;) s
+14.4 477 M (129:) s
+35.4 477 M
+(                    }) s
+14.4 469 M (130:) s
+35.4 469 M
+(                }) s
+14.4 461 M (131:) s
+35.4 461 M
+(            }) s
+14.4 453 M (132:) s
+35.4 453 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 453 M
+(return) s
+/F-gs-font 7 7 SF
+111 453 M
+( beta;) s
+14.4 445 M (133:) s
+35.4 445 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+77.4 445 M
+(else) s
+/F-gs-font 7 7 SF
+94.2 445 M
+( ) s
+/Courier-Oblique 7 7 SUF
+98.4 445 M
+(//This is just for safty if the function) s
+/F-gs-font 7 7 SF
+14.4 437 M (134:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 437 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 437 M
+(//is called with wron parameters) s
+/F-gs-font 7 7 SF
+14.4 429 M (135:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 429 M
+(        {) s
+14.4 421 M (136:) s
+35.4 421 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 421 M
+(return) s
+/F-gs-font 7 7 SF
+111 421 M
+( 0;) s
+14.4 413 M (137:) s
+35.4 413 M
+(        }) s
+14.4 405 M (138:) s
+35.4 405 M
+(    }) s
+14.4 397 M (139:) s
+14.4 389 M (140:) s
+35.4 389 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 389 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 389 M
+(static) s
+/F-gs-font 7 7 SF
+111 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 389 M
+(int) s
+/F-gs-font 7 7 SF
+127.8 389 M
+( determineMove\() s
+/Courier-Bold 7 7 SUF
+190.8 389 M
+(char) s
+/F-gs-font 7 7 SF
+207.6 389 M
+( player\) {) s
+14.4 381 M (141:) s
+14.4 373 M (142:) s
+35.4 373 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 373 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 373 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+127.8 373 M
+('X') s
+/F-gs-font 7 7 SF
+140.4 373 M
+(\) {) s
+14.4 365 M (143:) s
+35.4 365 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 365 M
+(//It is player X's turn, he will try to) s
+/F-gs-font 7 7 SF
+14.4 357 M (144:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 357 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 357 M
+(//maximize the score) s
+/F-gs-font 7 7 SF
+14.4 349 M (145:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+14.4 341 M (146:) s
+35.4 341 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 341 M
+(//Go through all possible moves and get the) s
+/F-gs-font 7 7 SF
+14.4 333 M (147:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 333 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 333 M
+(//scores) s
+/F-gs-font 7 7 SF
+14.4 325 M (148:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 325 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 325 M
+(int) s
+/F-gs-font 7 7 SF
+98.4 325 M
+( maxScore = -invalidScore;) s
+14.4 317 M (149:) s
+35.4 317 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 317 M
+(int) s
+/F-gs-font 7 7 SF
+98.4 317 M
+( maxMove = 0;) s
+14.4 309 M (150:) s
+35.4 309 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 309 M
+(for) s
+/F-gs-font 7 7 SF
+98.4 309 M
+( \() s
+/Courier-Bold 7 7 SUF
+106.8 309 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 309 M
+( move = 0; move < VierGewinnt.COLS; ++move\) {) s
+14.4 301 M (151:) s
+35.4 301 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 301 M
+(if) s
+/F-gs-font 7 7 SF
+111 301 M
+( \(VierGewinnt.canMove\(move\)\) {) s
+14.4 293 M (152:) s
+35.4 293 M
+(                    VierGewinnt.move\(move, ) s
+/Courier-Bold 7 7 SUF
+216 293 M
+('X') s
+/F-gs-font 7 7 SF
+228.6 293 M
+(\);) s
+14.4 285 M (153:) s
+35.4 285 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 285 M
+(int) s
+/F-gs-font 7 7 SF
+132 285 M
+( score = alphabeta\() s
+/Courier-Bold 7 7 SUF
+211.8 285 M
+('O') s
+/F-gs-font 7 7 SF
+224.4 285 M
+(\);) s
+14.4 277 M (154:) s
+35.4 277 M
+(                    ComputerPlayer.moveScore[move] = score;) s
+14.4 269 M (155:) s
+14.4 261 M (156:) s
+14.4 253 M (157:) s
+35.4 253 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 253 M
+(if) s
+/F-gs-font 7 7 SF
+127.8 253 M
+( \(score >= maxScore\) {) s
+14.4 245 M (158:) s
+35.4 245 M
+(                        maxScore = score;) s
+14.4 237 M (159:) s
+35.4 237 M
+(                        maxMove = move;) s
+14.4 229 M (160:) s
+35.4 229 M
+(                    }) s
+14.4 221 M (161:) s
+35.4 221 M
+(                    VierGewinnt.undo\(move, ) s
+/Courier-Bold 7 7 SUF
+216 221 M
+('X') s
+/F-gs-font 7 7 SF
+228.6 221 M
+(\);) s
+14.4 213 M (162:) s
+35.4 213 M
+(                } ) s
+/Courier-Bold 7 7 SUF
+111 213 M
+(else) s
+/F-gs-font 7 7 SF
+127.8 213 M
+( ) s
+/Courier-Oblique 7 7 SUF
+132 213 M
+(//Just set the move score to an invalid score) s
+/F-gs-font 7 7 SF
+14.4 205 M (163:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 205 M
+(                {) s
+14.4 197 M (164:) s
+35.4 197 M
+(                    moveScore[move] = invalidScore;) s
+14.4 189 M (165:) s
+35.4 189 M
+(                }) s
+14.4 181 M (166:) s
+35.4 181 M
+(            }) s
+14.4 173 M (167:) s
+14.4 165 M (168:) s
+35.4 165 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 165 M
+(//Return the move with the highest score) s
+/F-gs-font 7 7 SF
+14.4 157 M (169:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 157 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 157 M
+(return) s
+/F-gs-font 7 7 SF
+111 157 M
+( maxMove;) s
+14.4 149 M (170:) s
+35.4 149 M
+(            ) s
+14.4 141 M (171:) s
+35.4 141 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+77.4 141 M
+(else) s
+/F-gs-font 7 7 SF
+94.2 141 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 141 M
+(if) s
+/F-gs-font 7 7 SF
+106.8 141 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+157.2 141 M
+('O') s
+/F-gs-font 7 7 SF
+169.8 141 M
+(\) {) s
+14.4 133 M (172:) s
+35.4 133 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 133 M
+(//It is player O's turn, he will try to) s
+/F-gs-font 7 7 SF
+14.4 125 M (173:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 125 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 125 M
+(//minimize the score) s
+/F-gs-font 7 7 SF
+14.4 117 M (174:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+14.4 109 M (175:) s
+35.4 109 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 109 M
+(//Go through all possible moves and get the) s
+/F-gs-font 7 7 SF
+14.4 101 M (176:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 101 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+85.8 101 M
+(//scores) s
+/F-gs-font 7 7 SF
+14.4 93 M (177:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 93 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 93 M
+(int) s
+/F-gs-font 7 7 SF
+98.4 93 M
+( minScore = invalidScore;) s
+14.4 85 M (178:) s
+35.4 85 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 85 M
+(int) s
+/F-gs-font 7 7 SF
+98.4 85 M
+( minMove = 0;) s
+14.4 77 M (179:) s
+35.4 77 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 77 M
+(for) s
+/F-gs-font 7 7 SF
+98.4 77 M
+( \() s
+/Courier-Bold 7 7 SUF
+106.8 77 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 77 M
+( move = 0; move < VierGewinnt.COLS; ++move\) {) s
+14.4 69 M (180:) s
+35.4 69 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 69 M
+(if) s
+/F-gs-font 7 7 SF
+111 69 M
+( \(VierGewinnt.canMove\(move\)\) {) s
+14.4 61 M (181:) s
+35.4 61 M
+(                    VierGewinnt.move\(move, ) s
+/Courier-Bold 7 7 SUF
+216 61 M
+('O') s
+/F-gs-font 7 7 SF
+228.6 61 M
+(\);) s
+14.4 53 M (182:) s
+35.4 53 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 53 M
+(int) s
+/F-gs-font 7 7 SF
+132 53 M
+( score = alphabeta\() s
+/Courier-Bold 7 7 SUF
+211.8 53 M
+('X') s
+/F-gs-font 7 7 SF
+224.4 53 M
+(\);) s
+14.4 45 M (183:) s
+14.4 37 M (184:) s
+35.4 37 M
+(                    moveScore[move] = score;) s
+14.4 29 M (185:) s
+14.4 21 M (186:) s
+35.4 21 M
+(                    ) s
+/Courier-Bold 7 7 SUF
+119.4 21 M
+(if) s
+/F-gs-font 7 7 SF
+127.8 21 M
+( \(score < minScore\) {) s
+14.4 13 M (187:) s
+35.4 13 M
+(                        minScore = score;) s
+14.4 5 M (188:) s
+35.4 5 M
+(                        minMove = move;) s
+411.4 501 M (189:) s
+432.4 501 M
+(                    }) s
+411.4 493 M (190:) s
+432.4 493 M
+(                    VierGewinnt.undo\(move, ) s
+/Courier-Bold 7 7 SUF
+613 493 M
+('O') s
+/F-gs-font 7 7 SF
+625.6 493 M
+(\);) s
+411.4 485 M (191:) s
+432.4 485 M
+(                } ) s
+/Courier-Bold 7 7 SUF
+508 485 M
+(else) s
+/F-gs-font 7 7 SF
+524.8 485 M
+( ) s
+/Courier-Oblique 7 7 SUF
+529 485 M
+(//Just set the move score to an invalid score) s
+/F-gs-font 7 7 SF
+411.4 477 M (192:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 477 M
+(                {) s
+411.4 469 M (193:) s
+432.4 469 M
+(                    moveScore[move] = invalidScore;) s
+411.4 461 M (194:) s
+432.4 461 M
+(                }) s
+411.4 453 M (195:) s
+432.4 453 M
+(            }) s
+411.4 445 M (196:) s
+432.4 445 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 445 M
+(//Return the move with the least score) s
+/F-gs-font 7 7 SF
+411.4 437 M (197:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 437 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 437 M
+(return) s
+/F-gs-font 7 7 SF
+508 437 M
+( minMove;) s
+411.4 429 M (198:) s
+432.4 429 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 429 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 429 M
+( ) s
+/Courier-Oblique 7 7 SUF
+495.4 429 M
+(//This is just for safty if the function) s
+/F-gs-font 7 7 SF
+411.4 421 M (199:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 421 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 421 M
+(//is called with wrong parameters) s
+/F-gs-font 7 7 SF
+411.4 413 M (200:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 413 M
+(        {) s
+411.4 405 M (201:) s
+432.4 405 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 405 M
+(return) s
+/F-gs-font 7 7 SF
+508 405 M
+( 0;) s
+411.4 397 M (202:) s
+432.4 397 M
+(        }) s
+411.4 389 M (203:) s
+432.4 389 M
+(    }) s
+411.4 381 M (204:) s
+432.4 381 M
+(}) s
+_R
+S
+%%Page: (1) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (VierGewinnt.java) def
+/fdir () def
+/ftail (VierGewinnt.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (15:13:15) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+(Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+(Aufgabe 4-1) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+(Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+(Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+( */) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( java.util.Arrays;) s
+18.6 429 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 429 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 429 M
+( java.util.Scanner;) s
+18.6 421 M (11:) s
+18.6 413 M (12:) s
+/Courier-Bold 7 7 SUF
+35.4 413 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 413 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 413 M
+( VierGewinnt {) s
+18.6 405 M (13:) s
+18.6 397 M (14:) s
+35.4 397 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 397 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 397 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 397 M
+(final) s
+/F-gs-font 7 7 SF
+132 397 M
+( ) s
+/Courier-Bold 7 7 SUF
+136.2 397 M
+(int) s
+/F-gs-font 7 7 SF
+148.8 397 M
+( COLS = 7;) s
+18.6 389 M (15:) s
+35.4 389 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 389 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 389 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 389 M
+(final) s
+/F-gs-font 7 7 SF
+132 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+136.2 389 M
+(int) s
+/F-gs-font 7 7 SF
+148.8 389 M
+( ROWS = 6;) s
+18.6 381 M (16:) s
+35.4 381 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 381 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 381 M
+(static) s
+/F-gs-font 7 7 SF
+111 381 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 381 M
+(int) s
+/F-gs-font 7 7 SF
+127.8 381 M
+( toWin = 4;      ) s
+/Courier-Oblique 7 7 SUF
+199.2 381 M
+(//4 gewinnt) s
+/F-gs-font 7 7 SF
+18.6 373 M (17:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 373 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 373 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 373 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 373 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 373 M
+( lastX = 0;) s
+18.6 365 M (18:) s
+35.4 365 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 365 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 365 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 365 M
+(int) s
+/F-gs-font 7 7 SF
+123.6 365 M
+( lastY = 0;) s
+18.6 357 M (19:) s
+18.6 349 M (20:) s
+35.4 349 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+52.2 349 M
+(// Enum for the different tokens \(empty, O, X\)) s
+/F-gs-font 7 7 SF
+18.6 341 M (21:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 341 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 341 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 341 M
+( enum Token {) s
+18.6 333 M (22:) s
+18.6 325 M (23:) s
+35.4 325 M
+(        empty\() s
+/Courier-Bold 7 7 SUF
+94.2 325 M
+(" ") s
+/F-gs-font 7 7 SF
+106.8 325 M
+(\),) s
+18.6 317 M (24:) s
+35.4 317 M
+(        player1\() s
+/Courier-Bold 7 7 SUF
+102.6 317 M
+("O") s
+/F-gs-font 7 7 SF
+115.2 317 M
+(\),) s
+18.6 309 M (25:) s
+35.4 309 M
+(        player2\() s
+/Courier-Bold 7 7 SUF
+102.6 309 M
+("X") s
+/F-gs-font 7 7 SF
+115.2 309 M
+(\);) s
+18.6 301 M (26:) s
+35.4 301 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 301 M
+(private) s
+/F-gs-font 7 7 SF
+98.4 301 M
+( String representation; ) s
+/Courier-Oblique 7 7 SUF
+199.2 301 M
+(// string representation of value) s
+/F-gs-font 7 7 SF
+18.6 293 M (27:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+18.6 285 M (28:) s
+35.4 285 M
+(        Token\(String s\) {) s
+18.6 277 M (29:) s
+35.4 277 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 277 M
+(this) s
+/F-gs-font 7 7 SF
+102.6 277 M
+(.representation = s;) s
+18.6 269 M (30:) s
+35.4 269 M
+(        }) s
+18.6 261 M (31:) s
+18.6 253 M (32:) s
+35.4 253 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 253 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 253 M
+( String toString\(\) {) s
+18.6 245 M (33:) s
+35.4 245 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 245 M
+(return) s
+/F-gs-font 7 7 SF
+111 245 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 245 M
+(this) s
+/F-gs-font 7 7 SF
+132 245 M
+(.representation;) s
+18.6 237 M (34:) s
+35.4 237 M
+(        }) s
+18.6 229 M (35:) s
+35.4 229 M
+(    }) s
+18.6 221 M (36:) s
+35.4 221 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 221 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 221 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 221 M
+(static) s
+/F-gs-font 7 7 SF
+111 221 M
+( Token[][] board = ) s
+/Courier-Bold 7 7 SUF
+190.8 221 M
+(new) s
+/F-gs-font 7 7 SF
+203.4 221 M
+( Token[COLS][ROWS]; ) s
+/Courier-Oblique 7 7 SUF
+287.4 221 M
+(// 7 columns with 6 fiel) s
+5 213 M
+(ds each) s
+/F-gs-font 7 7 SF
+18.6 205 M (37:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 205 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 205 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 205 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 205 M
+(static) s
+/F-gs-font 7 7 SF
+111 205 M
+( IPlayer[] players = ) s
+/Courier-Bold 7 7 SUF
+199.2 205 M
+(new) s
+/F-gs-font 7 7 SF
+211.8 205 M
+( IPlayer[2]; ) s
+/Courier-Oblique 7 7 SUF
+266.4 205 M
+(//\302\240two players) s
+/F-gs-font 7 7 SF
+18.6 197 M (38:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 197 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 197 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 197 M
+( Token correctToken;) s
+18.6 189 M (39:) s
+18.6 181 M (40:) s
+35.4 181 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+52.2 181 M
+(/** initialize board and players and start the game */) s
+/F-gs-font 7 7 SF
+18.6 173 M (41:) s
+35.4 173 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 173 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 173 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 173 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 173 M
+( play\(\) {) s
+18.6 165 M (42:) s
+35.4 165 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 165 M
+(// initialize the board) s
+/F-gs-font 7 7 SF
+18.6 157 M (43:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 157 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 157 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 157 M
+( \(Token[] column : VierGewinnt.board\) {) s
+18.6 149 M (44:) s
+35.4 149 M
+(            Arrays.fill\(column, Token.empty\);) s
+18.6 141 M (45:) s
+35.4 141 M
+(        }) s
+18.6 133 M (46:) s
+18.6 125 M (47:) s
+18.6 117 M (48:) s
+35.4 117 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 117 M
+(// initialize players) s
+/F-gs-font 7 7 SF
+18.6 109 M (49:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 109 M
+(        players[0] = ) s
+/Courier-Bold 7 7 SUF
+123.6 109 M
+(new) s
+/F-gs-font 7 7 SF
+136.2 109 M
+( HumanPlayer\(\);) s
+18.6 101 M (50:) s
+35.4 101 M
+(        System.out.print\() s
+/Courier-Bold 7 7 SUF
+140.4 101 M
+("Play against a human opponent? \(y / n\) ") s
+/F-gs-font 7 7 SF
+312.6 101 M
+(\);) s
+18.6 93 M (51:) s
+35.4 93 M
+(        String opponent = ) s
+/Courier-Bold 7 7 SUF
+144.6 93 M
+(new) s
+/F-gs-font 7 7 SF
+157.2 93 M
+( Scanner\(System.in\).nextLine\(\);) s
+18.6 85 M (52:) s
+35.4 85 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 85 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 85 M
+( \(opponent.toLowerCase\(\).equals\() s
+/Courier-Bold 7 7 SUF
+211.8 85 M
+("y") s
+/F-gs-font 7 7 SF
+224.4 85 M
+(\)\) {) s
+18.6 77 M (53:) s
+35.4 77 M
+(            players[1] = ) s
+/Courier-Bold 7 7 SUF
+140.4 77 M
+(new) s
+/F-gs-font 7 7 SF
+153 77 M
+( HumanPlayer\(\);) s
+18.6 69 M (54:) s
+35.4 69 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+77.4 69 M
+(else) s
+/F-gs-font 7 7 SF
+94.2 69 M
+( {) s
+18.6 61 M (55:) s
+35.4 61 M
+(            players[1] = ) s
+/Courier-Bold 7 7 SUF
+140.4 61 M
+(new) s
+/F-gs-font 7 7 SF
+153 61 M
+( ComputerPlayer\(\);) s
+18.6 53 M (56:) s
+35.4 53 M
+(        }) s
+18.6 45 M (57:) s
+35.4 45 M
+(        players[0].setToken\(Token.player1\);) s
+18.6 37 M (58:) s
+35.4 37 M
+(        players[1].setToken\(Token.player2\);) s
+18.6 29 M (59:) s
+35.4 29 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 29 M
+(// play...) s
+/F-gs-font 7 7 SF
+18.6 21 M (60:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 21 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 21 M
+(boolean) s
+/F-gs-font 7 7 SF
+98.4 21 M
+( solved = ) s
+/Courier-Bold 7 7 SUF
+140.4 21 M
+(false) s
+/F-gs-font 7 7 SF
+161.4 21 M
+(;) s
+18.6 13 M (61:) s
+35.4 13 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 13 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 13 M
+( currentPlayer = \() s
+/Courier-Bold 7 7 SUF
+157.2 13 M
+(new) s
+/F-gs-font 7 7 SF
+169.8 13 M
+( java.util.Random\(\)\).nextInt\(2\);  ) s
+/Courier-Oblique 7 7 SUF
+312.6 13 M
+(//choose randomly ) s
+5 5 M
+(who begins) s
+/F-gs-font 7 7 SF
+415.6 501 M (62:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 501 M
+(        System.out.println\() s
+/Courier-Bold 7 7 SUF
+545.8 501 M
+("current player: ") s
+/F-gs-font 7 7 SF
+621.4 501 M
+( + currentPlayer\);) s
+415.6 493 M (63:) s
+432.4 493 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 493 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 493 M
+( insertCol, insertRow; ) s
+/Courier-Oblique 7 7 SUF
+575.2 493 M
+(// starting from 0) s
+/F-gs-font 7 7 SF
+415.6 485 M (64:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 485 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 485 M
+(while) s
+/F-gs-font 7 7 SF
+487 485 M
+( \() s
+/Courier-Bold 7 7 SUF
+495.4 485 M
+(true) s
+/F-gs-font 7 7 SF
+512.2 485 M
+(\) {) s
+415.6 477 M (65:) s
+432.4 477 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 477 M
+(// get player's next "move") s
+/F-gs-font 7 7 SF
+415.6 469 M (66:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 469 M
+(            lastX = insertCol = players[currentPlayer].getNextColumn\(VierGewinnt.boa) s
+402 461 M
+(rd\);) s
+415.6 453 M (67:) s
+432.4 453 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 453 M
+(// insert the token and get the row where it landed) s
+/F-gs-font 7 7 SF
+415.6 445 M (68:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 445 M
+(            lastY = insertRow = ) s
+/Courier-Bold 7 7 SUF
+566.8 445 M
+(this) s
+/F-gs-font 7 7 SF
+583.6 445 M
+(.insertToken\(insertCol, players[currentPlayer].g) s
+402 437 M
+(etToken\(\)\);) s
+415.6 429 M (69:) s
+432.4 429 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 429 M
+(//\302\240check if the game is over) s
+/F-gs-font 7 7 SF
+415.6 421 M (70:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 421 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 421 M
+(if) s
+/F-gs-font 7 7 SF
+491.2 421 M
+(\(VierGewinnt.checkWin\(insertCol, insertRow\) != ) s
+/Courier-Bold 7 7 SUF
+688.6 421 M
+(' ') s
+/F-gs-font 7 7 SF
+701.2 421 M
+( || isBoardFull\(\)\)) s
+415.6 413 M (71:) s
+432.4 413 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 413 M
+(break) s
+/F-gs-font 7 7 SF
+520.6 413 M
+(;) s
+415.6 405 M (72:) s
+432.4 405 M
+(            ) s
+415.6 397 M (73:) s
+432.4 397 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 397 M
+(//char bla = VierGewinnt.checkWin\(insertCol, insertRow\);) s
+/F-gs-font 7 7 SF
+415.6 389 M (74:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 389 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 389 M
+(//switch to other player) s
+/F-gs-font 7 7 SF
+415.6 381 M (75:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 381 M
+(            currentPlayer = \(currentPlayer + 1\) % 2;) s
+415.6 373 M (76:) s
+432.4 373 M
+(        }) s
+415.6 365 M (77:) s
+432.4 365 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 365 M
+(char) s
+/F-gs-font 7 7 SF
+482.8 365 M
+( winner = VierGewinnt.checkWin\(lastX, lastY\);) s
+415.6 357 M (78:) s
+432.4 357 M
+(        System.out.println\(displayBoard\(VierGewinnt.board\)\);) s
+415.6 349 M (79:) s
+432.4 349 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 349 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 349 M
+( \(winner != ) s
+/Courier-Bold 7 7 SUF
+524.8 349 M
+(' ') s
+/F-gs-font 7 7 SF
+537.4 349 M
+(\) {) s
+415.6 341 M (80:) s
+432.4 341 M
+(            System.out.println\() s
+/Courier-Bold 7 7 SUF
+562.6 341 M
+("Player ") s
+/F-gs-font 7 7 SF
+600.4 341 M
+( + winner + ) s
+/Courier-Bold 7 7 SUF
+650.8 341 M
+(" wins!") s
+/F-gs-font 7 7 SF
+684.4 341 M
+(\);) s
+415.6 333 M (81:) s
+432.4 333 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 333 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 333 M
+({) s
+415.6 325 M (82:) s
+432.4 325 M
+(            System.out.println\() s
+/Courier-Bold 7 7 SUF
+562.6 325 M
+("Draw! Game over.") s
+/F-gs-font 7 7 SF
+638.2 325 M
+(\);) s
+415.6 317 M (83:) s
+432.4 317 M
+(        }) s
+415.6 309 M (84:) s
+432.4 309 M
+(    }) s
+415.6 301 M (85:) s
+415.6 293 M (86:) s
+432.4 293 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 293 M
+(/** Inserts the token at the specified column \(if possible\)) s
+/F-gs-font 7 7 SF
+415.6 285 M (87:) s
+/Courier-Oblique 7 7 SUF
+432.4 285 M
+(    and returns the row where the token landed */) s
+/F-gs-font 7 7 SF
+415.6 277 M (88:) s
+432.4 277 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 277 M
+(/** !!!!! Achtung: in der Aufgabenstellung steht, dass das Programm bei ung??lti) s
+402 269 M
+(ger) s
+/F-gs-font 7 7 SF
+415.6 261 M (89:) s
+/Courier-Oblique 7 7 SUF
+432.4 261 M
+(    Eingabe mit Fehlermeldung terminieren soll. Hier ist das aber gar nicht) s
+/F-gs-font 7 7 SF
+415.6 253 M (90:) s
+/Courier-Oblique 7 7 SUF
+432.4 253 M
+(    noetig, da eine ung??ltige Spaltenangabe abgefangen wird und neu gefragt) s
+/F-gs-font 7 7 SF
+415.6 245 M (91:) s
+/Courier-Oblique 7 7 SUF
+432.4 245 M
+(    wird. !!!!! */) s
+/F-gs-font 7 7 SF
+415.6 237 M (92:) s
+432.4 237 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 237 M
+(private) s
+/F-gs-font 7 7 SF
+478.6 237 M
+( ) s
+/Courier-Bold 7 7 SUF
+482.8 237 M
+(int) s
+/F-gs-font 7 7 SF
+495.4 237 M
+( insertToken\() s
+/Courier-Bold 7 7 SUF
+550 237 M
+(int) s
+/F-gs-font 7 7 SF
+562.6 237 M
+( column, Token tok\) {) s
+415.6 229 M (93:) s
+432.4 229 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 229 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 229 M
+( row = -1;) s
+415.6 221 M (94:) s
+432.4 221 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 221 M
+(for) s
+/F-gs-font 7 7 SF
+478.6 221 M
+( \() s
+/Courier-Bold 7 7 SUF
+487 221 M
+(int) s
+/F-gs-font 7 7 SF
+499.6 221 M
+( i = 0; i < board[column].length; i++\) {) s
+415.6 213 M (95:) s
+432.4 213 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 213 M
+(if) s
+/F-gs-font 7 7 SF
+491.2 213 M
+( \(board[column][i].equals\(Token.empty\)\) {) s
+415.6 205 M (96:) s
+432.4 205 M
+(                row = i;) s
+415.6 197 M (97:) s
+432.4 197 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 197 M
+(break) s
+/F-gs-font 7 7 SF
+520.6 197 M
+(;) s
+415.6 189 M (98:) s
+432.4 189 M
+(            }) s
+415.6 181 M (99:) s
+432.4 181 M
+(        }) s
+411.4 173 M (100:) s
+432.4 173 M
+(        board[column][row] = tok;) s
+411.4 165 M (101:) s
+432.4 165 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 165 M
+(return) s
+/F-gs-font 7 7 SF
+491.2 165 M
+( row;) s
+411.4 157 M (102:) s
+432.4 157 M
+(    }) s
+411.4 149 M (103:) s
+411.4 141 M (104:) s
+432.4 141 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 141 M
+(/** Checks if every position is occupied */) s
+/F-gs-font 7 7 SF
+411.4 133 M (105:) s
+432.4 133 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 133 M
+(private) s
+/F-gs-font 7 7 SF
+478.6 133 M
+( ) s
+/Courier-Bold 7 7 SUF
+482.8 133 M
+(boolean) s
+/F-gs-font 7 7 SF
+512.2 133 M
+( isBoardFull\(\) {) s
+411.4 125 M (106:) s
+432.4 125 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 125 M
+(boolean) s
+/F-gs-font 7 7 SF
+495.4 125 M
+( full = ) s
+/Courier-Bold 7 7 SUF
+529 125 M
+(true) s
+/F-gs-font 7 7 SF
+545.8 125 M
+(;) s
+411.4 117 M (107:) s
+432.4 117 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 117 M
+(for) s
+/F-gs-font 7 7 SF
+478.6 117 M
+( \() s
+/Courier-Bold 7 7 SUF
+487 117 M
+(int) s
+/F-gs-font 7 7 SF
+499.6 117 M
+( i = 0; i < COLS; i++\) {) s
+411.4 109 M (108:) s
+432.4 109 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 109 M
+(if) s
+/F-gs-font 7 7 SF
+491.2 109 M
+( \(board[i][ROWS - 1].equals\(Token.empty\)\) {) s
+411.4 101 M (109:) s
+432.4 101 M
+(                full = ) s
+/Courier-Bold 7 7 SUF
+529 101 M
+(false) s
+/F-gs-font 7 7 SF
+550 101 M
+(;) s
+411.4 93 M (110:) s
+432.4 93 M
+(            }) s
+411.4 85 M (111:) s
+432.4 85 M
+(        }) s
+411.4 77 M (112:) s
+432.4 77 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 77 M
+(return) s
+/F-gs-font 7 7 SF
+491.2 77 M
+( full;) s
+411.4 69 M (113:) s
+432.4 69 M
+(    }) s
+411.4 61 M (114:) s
+411.4 53 M (115:) s
+432.4 53 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 53 M
+(/** Checks for at least four equal tokens in a row in either direction */) s
+/F-gs-font 7 7 SF
+411.4 45 M (116:) s
+411.4 37 M (117:) s
+432.4 37 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 37 M
+(public) s
+/F-gs-font 7 7 SF
+474.4 37 M
+( ) s
+/Courier-Bold 7 7 SUF
+478.6 37 M
+(static) s
+/F-gs-font 7 7 SF
+503.8 37 M
+( ) s
+/Courier-Bold 7 7 SUF
+508 37 M
+(char) s
+/F-gs-font 7 7 SF
+524.8 37 M
+( checkWin\() s
+/Courier-Bold 7 7 SUF
+566.8 37 M
+(int) s
+/F-gs-font 7 7 SF
+579.4 37 M
+( lastX, ) s
+/Courier-Bold 7 7 SUF
+613 37 M
+(int) s
+/F-gs-font 7 7 SF
+625.6 37 M
+( lastY\) {) s
+411.4 29 M (118:) s
+432.4 29 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 29 M
+(//We only have to check around the last placed) s
+/F-gs-font 7 7 SF
+411.4 21 M (119:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 21 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 21 M
+(//piece.) s
+/F-gs-font 7 7 SF
+411.4 13 M (120:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 13 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 13 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 13 M
+( x1, y1, x2, y2;) s
+411.4 5 M (121:) s
+432.4 5 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 5 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 5 M
+( width = COLS;) s
+_R
+S
+%%Page: (2) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 2 def
+/fname (VierGewinnt.java) def
+/fdir () def
+/ftail (VierGewinnt.java) def
+% User defined strings:
+/pagenumstr (2) def
+/moddatestr (11/24/11) def
+/modtimestr (15:13:15) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+14.4 501 M (122:) s
+35.4 501 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 501 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 501 M
+( height = ROWS;) s
+14.4 493 M (123:) s
+35.4 493 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 493 M
+(char) s
+/F-gs-font 7 7 SF
+85.8 493 M
+( player = at\(lastX, lastY\);) s
+14.4 485 M (124:) s
+35.4 485 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 485 M
+(//) s
+/F-gs-font 7 7 SF
+14.4 477 M (125:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 477 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 477 M
+(//Test if there's a horizontal win) s
+/F-gs-font 7 7 SF
+14.4 469 M (126:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 469 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 469 M
+(//) s
+/F-gs-font 7 7 SF
+14.4 461 M (127:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 461 M
+(        x1 = x2 = lastX;) s
+14.4 453 M (128:) s
+35.4 453 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 453 M
+(//Go right) s
+/F-gs-font 7 7 SF
+14.4 445 M (129:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 445 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 445 M
+(while) s
+/F-gs-font 7 7 SF
+90 445 M
+( \(x1 < width && at\(x1, lastY\) == player\) {) s
+14.4 437 M (130:) s
+35.4 437 M
+(            ++x1;) s
+14.4 429 M (131:) s
+35.4 429 M
+(        }) s
+14.4 421 M (132:) s
+35.4 421 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 421 M
+(//Go left) s
+/F-gs-font 7 7 SF
+14.4 413 M (133:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 413 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 413 M
+(while) s
+/F-gs-font 7 7 SF
+90 413 M
+( \(x2 >= 0 && at\(x2, lastY\) == player\) {) s
+14.4 405 M (134:) s
+35.4 405 M
+(            --x2;) s
+14.4 397 M (135:) s
+35.4 397 M
+(        }) s
+14.4 389 M (136:) s
+35.4 389 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 389 M
+(//Do we have a win here?) s
+/F-gs-font 7 7 SF
+14.4 381 M (137:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 381 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 381 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 381 M
+( \(x1 - x2 > toWin\) {) s
+14.4 373 M (138:) s
+35.4 373 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 373 M
+(return) s
+/F-gs-font 7 7 SF
+111 373 M
+( player;) s
+14.4 365 M (139:) s
+35.4 365 M
+(        }) s
+14.4 357 M (140:) s
+14.4 349 M (141:) s
+35.4 349 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 349 M
+(//) s
+/F-gs-font 7 7 SF
+14.4 341 M (142:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 341 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 341 M
+(//Test if there's a vertical win) s
+/F-gs-font 7 7 SF
+14.4 333 M (143:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 333 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 333 M
+(//) s
+/F-gs-font 7 7 SF
+14.4 325 M (144:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 325 M
+(        y1 = y2 = lastY;) s
+14.4 317 M (145:) s
+35.4 317 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 317 M
+(//Go up) s
+/F-gs-font 7 7 SF
+14.4 309 M (146:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 309 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 309 M
+(while) s
+/F-gs-font 7 7 SF
+90 309 M
+( \(y1 < height && at\(lastX, y1\) == player\) {) s
+14.4 301 M (147:) s
+35.4 301 M
+(            ++y1;) s
+14.4 293 M (148:) s
+35.4 293 M
+(        }) s
+14.4 285 M (149:) s
+35.4 285 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 285 M
+(//Go down) s
+/F-gs-font 7 7 SF
+14.4 277 M (150:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 277 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 277 M
+(while) s
+/F-gs-font 7 7 SF
+90 277 M
+( \(y2 >= 0 && at\(lastX, y2\) == player\) {) s
+14.4 269 M (151:) s
+35.4 269 M
+(            --y2;) s
+14.4 261 M (152:) s
+35.4 261 M
+(        }) s
+14.4 253 M (153:) s
+35.4 253 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 253 M
+(//Do we have a win here?) s
+/F-gs-font 7 7 SF
+14.4 245 M (154:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 245 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 245 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 245 M
+( \(y1 - y2 > toWin\) {) s
+14.4 237 M (155:) s
+35.4 237 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 237 M
+(return) s
+/F-gs-font 7 7 SF
+111 237 M
+( player;) s
+14.4 229 M (156:) s
+35.4 229 M
+(        }) s
+14.4 221 M (157:) s
+14.4 213 M (158:) s
+35.4 213 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 213 M
+(//                              X) s
+/F-gs-font 7 7 SF
+14.4 205 M (159:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 205 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 205 M
+(// Do we have a win like this?    X) s
+/F-gs-font 7 7 SF
+14.4 197 M (160:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 197 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 197 M
+(//                                  X) s
+/F-gs-font 7 7 SF
+14.4 189 M (161:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 189 M
+(        x1 = x2 = lastX;) s
+14.4 181 M (162:) s
+35.4 181 M
+(        y1 = y2 = lastY;) s
+14.4 173 M (163:) s
+35.4 173 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 173 M
+(//Go down and right) s
+/F-gs-font 7 7 SF
+14.4 165 M (164:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 165 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 165 M
+(while) s
+/F-gs-font 7 7 SF
+90 165 M
+( \(y1 >= 0 && x1 < width && at\(x1, y1\) == player\) {) s
+14.4 157 M (165:) s
+35.4 157 M
+(            ++x1;) s
+14.4 149 M (166:) s
+35.4 149 M
+(            --y1;) s
+14.4 141 M (167:) s
+35.4 141 M
+(        }) s
+14.4 133 M (168:) s
+35.4 133 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 133 M
+(//Go up and left) s
+/F-gs-font 7 7 SF
+14.4 125 M (169:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 125 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 125 M
+(while) s
+/F-gs-font 7 7 SF
+90 125 M
+( \(y2 < height && x2 >= 0 && at\(x2, y2\) == player\) {) s
+14.4 117 M (170:) s
+35.4 117 M
+(            --x2;) s
+14.4 109 M (171:) s
+35.4 109 M
+(            ++y2;) s
+14.4 101 M (172:) s
+35.4 101 M
+(        }) s
+14.4 93 M (173:) s
+35.4 93 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 93 M
+(//Do we have a win here?) s
+/F-gs-font 7 7 SF
+14.4 85 M (174:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 85 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 85 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 85 M
+( \(x1 - x2 > toWin\) {) s
+14.4 77 M (175:) s
+35.4 77 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 77 M
+(return) s
+/F-gs-font 7 7 SF
+111 77 M
+( player;) s
+14.4 69 M (176:) s
+35.4 69 M
+(        }) s
+14.4 61 M (177:) s
+14.4 53 M (178:) s
+35.4 53 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 53 M
+(//                                  X) s
+/F-gs-font 7 7 SF
+14.4 45 M (179:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 45 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 45 M
+(// Do we have a win like this?    X) s
+/F-gs-font 7 7 SF
+14.4 37 M (180:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 37 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 37 M
+(//                              X) s
+/F-gs-font 7 7 SF
+14.4 29 M (181:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 29 M
+(        x1 = x2 = lastX;) s
+14.4 21 M (182:) s
+35.4 21 M
+(        y1 = y2 = lastY;) s
+14.4 13 M (183:) s
+35.4 13 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 13 M
+(//Go down and left) s
+/F-gs-font 7 7 SF
+14.4 5 M (184:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 5 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 5 M
+(while) s
+/F-gs-font 7 7 SF
+90 5 M
+( \(y1 >= 0 && x1 >= 0 && at\(x1, y1\) == player\) {) s
+411.4 501 M (185:) s
+432.4 501 M
+(            --x1;) s
+411.4 493 M (186:) s
+432.4 493 M
+(            --y1;) s
+411.4 485 M (187:) s
+432.4 485 M
+(        }) s
+411.4 477 M (188:) s
+432.4 477 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 477 M
+(//Go up and right) s
+/F-gs-font 7 7 SF
+411.4 469 M (189:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 469 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 469 M
+(while) s
+/F-gs-font 7 7 SF
+487 469 M
+( \(y2 < height && x2 < width && at\(x2, y2\) == player\) {) s
+411.4 461 M (190:) s
+432.4 461 M
+(            ++x2;) s
+411.4 453 M (191:) s
+432.4 453 M
+(            ++y2;) s
+411.4 445 M (192:) s
+432.4 445 M
+(        }) s
+411.4 437 M (193:) s
+432.4 437 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 437 M
+(//Do we have a win here?) s
+/F-gs-font 7 7 SF
+411.4 429 M (194:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 429 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 429 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 429 M
+( \(x2 - x1 > toWin\) {) s
+411.4 421 M (195:) s
+432.4 421 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 421 M
+(return) s
+/F-gs-font 7 7 SF
+508 421 M
+( player;) s
+411.4 413 M (196:) s
+432.4 413 M
+(        }) s
+411.4 405 M (197:) s
+411.4 397 M (198:) s
+432.4 397 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 397 M
+(//No one is the winner) s
+/F-gs-font 7 7 SF
+411.4 389 M (199:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 389 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 389 M
+(return) s
+/F-gs-font 7 7 SF
+491.2 389 M
+( ) s
+/Courier-Bold 7 7 SUF
+495.4 389 M
+(' ') s
+/F-gs-font 7 7 SF
+508 389 M
+(;) s
+411.4 381 M (200:) s
+432.4 381 M
+(    }) s
+411.4 373 M (201:) s
+411.4 365 M (202:) s
+432.4 365 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 365 M
+(public) s
+/F-gs-font 7 7 SF
+474.4 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+478.6 365 M
+(static) s
+/F-gs-font 7 7 SF
+503.8 365 M
+( ) s
+/Courier-Bold 7 7 SUF
+508 365 M
+(int) s
+/F-gs-font 7 7 SF
+520.6 365 M
+( getScore\(\) {) s
+411.4 357 M (203:) s
+432.4 357 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 357 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 357 M
+( score = 0;) s
+411.4 349 M (204:) s
+432.4 349 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 349 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 349 M
+( width = COLS;) s
+411.4 341 M (205:) s
+432.4 341 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 341 M
+(int) s
+/F-gs-font 7 7 SF
+478.6 341 M
+( height = ROWS;) s
+411.4 333 M (206:) s
+411.4 325 M (207:) s
+432.4 325 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 325 M
+(//Pieces in the middle score higher than) s
+/F-gs-font 7 7 SF
+411.4 317 M (208:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 317 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+466 317 M
+(//pieces at the edge) s
+/F-gs-font 7 7 SF
+411.4 309 M (209:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+411.4 301 M (210:) s
+432.4 301 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 301 M
+(for) s
+/F-gs-font 7 7 SF
+478.6 301 M
+( \() s
+/Courier-Bold 7 7 SUF
+487 301 M
+(int) s
+/F-gs-font 7 7 SF
+499.6 301 M
+( x = 0; x < width; ++x\) {) s
+411.4 293 M (211:) s
+432.4 293 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 293 M
+(int) s
+/F-gs-font 7 7 SF
+495.4 293 M
+( columnscore = \(width / 2\) - x;) s
+411.4 285 M (212:) s
+432.4 285 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 285 M
+(if) s
+/F-gs-font 7 7 SF
+491.2 285 M
+( \(columnscore < 0\) {) s
+411.4 277 M (213:) s
+432.4 277 M
+(                columnscore = -columnscore;) s
+411.4 269 M (214:) s
+432.4 269 M
+(            }) s
+411.4 261 M (215:) s
+432.4 261 M
+(            columnscore = \(width / 2\) - columnscore;) s
+411.4 253 M (216:) s
+411.4 245 M (217:) s
+432.4 245 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 245 M
+(//Count the number of pieces in each column) s
+/F-gs-font 7 7 SF
+411.4 237 M (218:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 237 M
+(            ) s
+/Courier-Oblique 7 7 SUF
+482.8 237 M
+(//and score accordingly) s
+/F-gs-font 7 7 SF
+411.4 229 M (219:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+432.4 229 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 229 M
+(for) s
+/F-gs-font 7 7 SF
+495.4 229 M
+( \() s
+/Courier-Bold 7 7 SUF
+503.8 229 M
+(int) s
+/F-gs-font 7 7 SF
+516.4 229 M
+( y = 0; y < height; ++y\) {) s
+411.4 221 M (220:) s
+432.4 221 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 221 M
+(int) s
+/F-gs-font 7 7 SF
+512.2 221 M
+( rowscore = \(height / 2\) - y;) s
+411.4 213 M (221:) s
+432.4 213 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 213 M
+(if) s
+/F-gs-font 7 7 SF
+508 213 M
+( \(rowscore < 0\) {) s
+411.4 205 M (222:) s
+432.4 205 M
+(                    rowscore = -rowscore;) s
+411.4 197 M (223:) s
+432.4 197 M
+(                }) s
+411.4 189 M (224:) s
+432.4 189 M
+(                rowscore = \(height / 2\) - rowscore;) s
+411.4 181 M (225:) s
+411.4 173 M (226:) s
+432.4 173 M
+(                ) s
+/Courier-Bold 7 7 SUF
+499.6 173 M
+(if) s
+/F-gs-font 7 7 SF
+508 173 M
+( \(at\(x, y\) == ) s
+/Courier-Bold 7 7 SUF
+566.8 173 M
+('X') s
+/F-gs-font 7 7 SF
+579.4 173 M
+(\) {) s
+411.4 165 M (227:) s
+432.4 165 M
+(                    score += columnscore + rowscore;) s
+411.4 157 M (228:) s
+432.4 157 M
+(                } ) s
+/Courier-Bold 7 7 SUF
+508 157 M
+(else) s
+/F-gs-font 7 7 SF
+524.8 157 M
+( ) s
+/Courier-Bold 7 7 SUF
+529 157 M
+(if) s
+/F-gs-font 7 7 SF
+537.4 157 M
+( \(at\(x, y\) == ) s
+/Courier-Bold 7 7 SUF
+596.2 157 M
+('O') s
+/F-gs-font 7 7 SF
+608.8 157 M
+(\) {) s
+411.4 149 M (229:) s
+432.4 149 M
+(                    score -= columnscore + rowscore;) s
+411.4 141 M (230:) s
+432.4 141 M
+(                }) s
+411.4 133 M (231:) s
+432.4 133 M
+(            }) s
+411.4 125 M (232:) s
+432.4 125 M
+(        }) s
+411.4 117 M (233:) s
+411.4 109 M (234:) s
+432.4 109 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 109 M
+(return) s
+/F-gs-font 7 7 SF
+491.2 109 M
+( score;) s
+411.4 101 M (235:) s
+432.4 101 M
+(    }) s
+411.4 93 M (236:) s
+411.4 85 M (237:) s
+432.4 85 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 85 M
+(public) s
+/F-gs-font 7 7 SF
+474.4 85 M
+( ) s
+/Courier-Bold 7 7 SUF
+478.6 85 M
+(static) s
+/F-gs-font 7 7 SF
+503.8 85 M
+( ) s
+/Courier-Bold 7 7 SUF
+508 85 M
+(char) s
+/F-gs-font 7 7 SF
+524.8 85 M
+( at\() s
+/Courier-Bold 7 7 SUF
+541.6 85 M
+(int) s
+/F-gs-font 7 7 SF
+554.2 85 M
+( x, ) s
+/Courier-Bold 7 7 SUF
+571 85 M
+(int) s
+/F-gs-font 7 7 SF
+583.6 85 M
+( y\) {) s
+411.4 77 M (238:) s
+432.4 77 M
+(        ) s
+/Courier-Bold 7 7 SUF
+466 77 M
+(if) s
+/F-gs-font 7 7 SF
+474.4 77 M
+( \(board[x][y].equals\(Token.player1\)\) {) s
+411.4 69 M (239:) s
+432.4 69 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 69 M
+(return) s
+/F-gs-font 7 7 SF
+508 69 M
+( ) s
+/Courier-Bold 7 7 SUF
+512.2 69 M
+('O') s
+/F-gs-font 7 7 SF
+524.8 69 M
+(;) s
+411.4 61 M (240:) s
+432.4 61 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 61 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 61 M
+( ) s
+/Courier-Bold 7 7 SUF
+495.4 61 M
+(if) s
+/F-gs-font 7 7 SF
+503.8 61 M
+( \(board[x][y].equals\(Token.player2\)\) {) s
+411.4 53 M (241:) s
+432.4 53 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 53 M
+(return) s
+/F-gs-font 7 7 SF
+508 53 M
+( ) s
+/Courier-Bold 7 7 SUF
+512.2 53 M
+('X') s
+/F-gs-font 7 7 SF
+524.8 53 M
+(;) s
+411.4 45 M (242:) s
+432.4 45 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+474.4 45 M
+(else) s
+/F-gs-font 7 7 SF
+491.2 45 M
+( {) s
+411.4 37 M (243:) s
+432.4 37 M
+(            ) s
+/Courier-Bold 7 7 SUF
+482.8 37 M
+(return) s
+/F-gs-font 7 7 SF
+508 37 M
+( ) s
+/Courier-Bold 7 7 SUF
+512.2 37 M
+(' ') s
+/F-gs-font 7 7 SF
+524.8 37 M
+(;) s
+411.4 29 M (244:) s
+432.4 29 M
+(        }) s
+411.4 21 M (245:) s
+432.4 21 M
+(    }) s
+411.4 13 M (246:) s
+411.4 5 M (247:) s
+432.4 5 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 5 M
+(/** returns a graphical representation of the board */) s
+/F-gs-font 7 7 SF
+_R
+S
+%%Page: (3) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 3 def
+/fname (VierGewinnt.java) def
+/fdir () def
+/ftail (VierGewinnt.java) def
+% User defined strings:
+/pagenumstr (3) def
+/moddatestr (11/24/11) def
+/modtimestr (15:13:15) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+14.4 501 M (248:) s
+35.4 501 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 501 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 501 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 501 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 501 M
+( String displayBoard\(Token[][] myBoard\) {) s
+14.4 493 M (249:) s
+35.4 493 M
+(        String rowDelimiter = ) s
+/Courier-Bold 7 7 SUF
+161.4 493 M
+("+") s
+/F-gs-font 7 7 SF
+174 493 M
+(;) s
+14.4 485 M (250:) s
+35.4 485 M
+(        String rowNumbering = ) s
+/Courier-Bold 7 7 SUF
+161.4 485 M
+(" ") s
+/F-gs-font 7 7 SF
+174 485 M
+(;) s
+14.4 477 M (251:) s
+35.4 477 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 477 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 477 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 477 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 477 M
+( col = 0; col < myBoard.length; col++\) {) s
+14.4 469 M (252:) s
+35.4 469 M
+(            rowDelimiter += ) s
+/Courier-Bold 7 7 SUF
+153 469 M
+("---+") s
+/F-gs-font 7 7 SF
+178.2 469 M
+(;) s
+14.4 461 M (253:) s
+35.4 461 M
+(            rowNumbering += ) s
+/Courier-Bold 7 7 SUF
+153 461 M
+(" ") s
+/F-gs-font 7 7 SF
+165.6 461 M
+( + \(col + 1\) + ) s
+/Courier-Bold 7 7 SUF
+228.6 461 M
+("  ") s
+/F-gs-font 7 7 SF
+245.4 461 M
+(;) s
+14.4 453 M (254:) s
+35.4 453 M
+(        }) s
+14.4 445 M (255:) s
+35.4 445 M
+(        rowDelimiter += ) s
+/Courier-Bold 7 7 SUF
+136.2 445 M
+("\\n") s
+/F-gs-font 7 7 SF
+153 445 M
+(;) s
+14.4 437 M (256:) s
+14.4 429 M (257:) s
+35.4 429 M
+(        String rowStr;) s
+14.4 421 M (258:) s
+35.4 421 M
+(        String presentation = rowDelimiter;) s
+14.4 413 M (259:) s
+35.4 413 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 413 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 413 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 413 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 413 M
+( row = myBoard[0].length - 1; row >= 0; row--\) {) s
+14.4 405 M (260:) s
+35.4 405 M
+(            rowStr = ) s
+/Courier-Bold 7 7 SUF
+123.6 405 M
+("| ") s
+/F-gs-font 7 7 SF
+140.4 405 M
+(;) s
+14.4 397 M (261:) s
+35.4 397 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 397 M
+(for) s
+/F-gs-font 7 7 SF
+98.4 397 M
+( \() s
+/Courier-Bold 7 7 SUF
+106.8 397 M
+(int) s
+/F-gs-font 7 7 SF
+119.4 397 M
+( col = 0; col < myBoard.length; col++\) {) s
+14.4 389 M (262:) s
+35.4 389 M
+(                rowStr += myBoard[col][row].toString\(\) + ) s
+/Courier-Bold 7 7 SUF
+274.8 389 M
+(" | ") s
+/F-gs-font 7 7 SF
+295.8 389 M
+(;) s
+14.4 381 M (263:) s
+35.4 381 M
+(            }) s
+14.4 373 M (264:) s
+35.4 373 M
+(            presentation += rowStr + ) s
+/Courier-Bold 7 7 SUF
+190.8 373 M
+("\\n") s
+/F-gs-font 7 7 SF
+207.6 373 M
+( + rowDelimiter;) s
+14.4 365 M (265:) s
+35.4 365 M
+(        }) s
+14.4 357 M (266:) s
+35.4 357 M
+(        presentation += rowNumbering;) s
+14.4 349 M (267:) s
+35.4 349 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 349 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 349 M
+( presentation;) s
+14.4 341 M (268:) s
+35.4 341 M
+(    }) s
+14.4 333 M (269:) s
+14.4 325 M (270:) s
+35.4 325 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 325 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 325 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 325 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 325 M
+( Token getTokenFromChar\() s
+/Courier-Bold 7 7 SUF
+207.6 325 M
+(char) s
+/F-gs-font 7 7 SF
+224.4 325 M
+( player\) {) s
+14.4 317 M (271:) s
+35.4 317 M
+(        Token token = Token.empty;) s
+14.4 309 M (272:) s
+35.4 309 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 309 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 309 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+127.8 309 M
+('O') s
+/F-gs-font 7 7 SF
+140.4 309 M
+(\) {) s
+14.4 301 M (273:) s
+35.4 301 M
+(            token = Token.player1;) s
+14.4 293 M (274:) s
+35.4 293 M
+(        }) s
+14.4 285 M (275:) s
+35.4 285 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 285 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 285 M
+( \(player == ) s
+/Courier-Bold 7 7 SUF
+127.8 285 M
+('X') s
+/F-gs-font 7 7 SF
+140.4 285 M
+(\) {) s
+14.4 277 M (276:) s
+35.4 277 M
+(            token = Token.player2;) s
+14.4 269 M (277:) s
+35.4 269 M
+(        }) s
+14.4 261 M (278:) s
+35.4 261 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 261 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 261 M
+( token;) s
+14.4 253 M (279:) s
+35.4 253 M
+(    }) s
+14.4 245 M (280:) s
+14.4 237 M (281:) s
+35.4 237 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 237 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 237 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 237 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 237 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 237 M
+(void) s
+/F-gs-font 7 7 SF
+127.8 237 M
+( move\() s
+/Courier-Bold 7 7 SUF
+153 237 M
+(int) s
+/F-gs-font 7 7 SF
+165.6 237 M
+( x, ) s
+/Courier-Bold 7 7 SUF
+182.4 237 M
+(char) s
+/F-gs-font 7 7 SF
+199.2 237 M
+( player\) {) s
+14.4 229 M (282:) s
+35.4 229 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 229 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 229 M
+( height = ROWS;) s
+14.4 221 M (283:) s
+35.4 221 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 221 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 221 M
+( width = COLS;) s
+14.4 213 M (284:) s
+35.4 213 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 213 M
+(//Find the first free place and place a) s
+/F-gs-font 7 7 SF
+14.4 205 M (285:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 205 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 205 M
+(//brick there) s
+/F-gs-font 7 7 SF
+14.4 197 M (286:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 197 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 197 M
+(for) s
+/F-gs-font 7 7 SF
+81.6 197 M
+( \() s
+/Courier-Bold 7 7 SUF
+90 197 M
+(int) s
+/F-gs-font 7 7 SF
+102.6 197 M
+( y = 0; y < height; ++y\) {) s
+14.4 189 M (287:) s
+35.4 189 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 189 M
+(if) s
+/F-gs-font 7 7 SF
+94.2 189 M
+( \(at\(x, y\) == ) s
+/Courier-Bold 7 7 SUF
+153 189 M
+(' ') s
+/F-gs-font 7 7 SF
+165.6 189 M
+(\) {) s
+14.4 181 M (288:) s
+35.4 181 M
+(                board[x][y] = getTokenFromChar\(player\);) s
+14.4 173 M (289:) s
+35.4 173 M
+(                lastX = x;) s
+14.4 165 M (290:) s
+35.4 165 M
+(                lastY = y;) s
+14.4 157 M (291:) s
+35.4 157 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 157 M
+(return) s
+/F-gs-font 7 7 SF
+127.8 157 M
+(;) s
+14.4 149 M (292:) s
+35.4 149 M
+(            }) s
+14.4 141 M (293:) s
+35.4 141 M
+(        }) s
+14.4 133 M (294:) s
+35.4 133 M
+(    }) s
+14.4 125 M (295:) s
+14.4 117 M (296:) s
+35.4 117 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 117 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 117 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 117 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 117 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 117 M
+(boolean) s
+/F-gs-font 7 7 SF
+140.4 117 M
+( canMove\() s
+/Courier-Bold 7 7 SUF
+178.2 117 M
+(int) s
+/F-gs-font 7 7 SF
+190.8 117 M
+( x\) {) s
+14.4 109 M (297:) s
+35.4 109 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 109 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 109 M
+( board[x][ROWS - 1].equals\(Token.empty\);) s
+14.4 101 M (298:) s
+35.4 101 M
+(    }) s
+14.4 93 M (299:) s
+14.4 85 M (300:) s
+35.4 85 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 85 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 85 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 85 M
+(static) s
+/F-gs-font 7 7 SF
+106.8 85 M
+( ) s
+/Courier-Bold 7 7 SUF
+111 85 M
+(void) s
+/F-gs-font 7 7 SF
+127.8 85 M
+( undo\() s
+/Courier-Bold 7 7 SUF
+153 85 M
+(int) s
+/F-gs-font 7 7 SF
+165.6 85 M
+( x, ) s
+/Courier-Bold 7 7 SUF
+182.4 85 M
+(char) s
+/F-gs-font 7 7 SF
+199.2 85 M
+( player\) {) s
+14.4 77 M (301:) s
+35.4 77 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 77 M
+(//Find the last non-free place and place a) s
+/F-gs-font 7 7 SF
+14.4 69 M (302:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+35.4 69 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 69 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 69 M
+( y = ROWS - 1;) s
+14.4 61 M (303:) s
+35.4 61 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 61 M
+(while) s
+/F-gs-font 7 7 SF
+90 61 M
+( \(y >= 0 && at\(x, y\) == ) s
+/Courier-Bold 7 7 SUF
+190.8 61 M
+(' ') s
+/F-gs-font 7 7 SF
+203.4 61 M
+(\) {) s
+14.4 53 M (304:) s
+35.4 53 M
+(            --y;) s
+14.4 45 M (305:) s
+35.4 45 M
+(        }) s
+14.4 37 M (306:) s
+35.4 37 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 37 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 37 M
+( \(at\(x, y\) == player\) {) s
+14.4 29 M (307:) s
+35.4 29 M
+(            board[x][y] = Token.empty;) s
+14.4 21 M (308:) s
+35.4 21 M
+(        }) s
+14.4 13 M (309:) s
+35.4 13 M
+(    }) s
+14.4 5 M (310:) s
+411.4 501 M (311:) s
+432.4 501 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+449.2 501 M
+(/** main method, starts the program */) s
+/F-gs-font 7 7 SF
+411.4 493 M (312:) s
+432.4 493 M
+(    ) s
+/Courier-Bold 7 7 SUF
+449.2 493 M
+(public) s
+/F-gs-font 7 7 SF
+474.4 493 M
+( ) s
+/Courier-Bold 7 7 SUF
+478.6 493 M
+(static) s
+/F-gs-font 7 7 SF
+503.8 493 M
+( ) s
+/Courier-Bold 7 7 SUF
+508 493 M
+(void) s
+/F-gs-font 7 7 SF
+524.8 493 M
+( main\(String args[]\) {) s
+411.4 485 M (313:) s
+432.4 485 M
+(        VierGewinnt game = ) s
+/Courier-Bold 7 7 SUF
+545.8 485 M
+(new) s
+/F-gs-font 7 7 SF
+558.4 485 M
+( VierGewinnt\(\);) s
+411.4 477 M (314:) s
+432.4 477 M
+(        game.play\(\);) s
+411.4 469 M (315:) s
+432.4 469 M
+(    }) s
+411.4 461 M (316:) s
+432.4 461 M
+(}) s
+_R
+S
+%%Page: (1) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (IPlayer.java) def
+/fdir () def
+/ftail (IPlayer.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (15:18:48) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+(Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+(Aufgabe 4-1) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+(Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+(Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+( */) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Oblique 7 7 SUF
+35.4 437 M
+(/** Inferface for VierGewinnt players */) s
+/F-gs-font 7 7 SF
+18.6 429 M (10:) s
+/Courier-Bold 7 7 SUF
+35.4 429 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 429 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 429 M
+(interface) s
+/F-gs-font 7 7 SF
+102.6 429 M
+( IPlayer{) s
+18.6 421 M (11:) s
+35.4 421 M
+(        ) s
+18.6 413 M (12:) s
+35.4 413 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 413 M
+(/** returns the name\(s\) of the programmer\(s\) */) s
+/F-gs-font 7 7 SF
+18.6 405 M (13:) s
+35.4 405 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 405 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 405 M
+( String getProgrammers\(\);) s
+18.6 397 M (14:) s
+35.4 397 M
+(        ) s
+18.6 389 M (15:) s
+35.4 389 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 389 M
+(/** returns the next move \(number of column, starting from 0\) of the player ) s
+5 381 M
+(*/) s
+/F-gs-font 7 7 SF
+18.6 373 M (16:) s
+35.4 373 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 373 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 373 M
+(int) s
+/F-gs-font 7 7 SF
+111 373 M
+( getNextColumn\(VierGewinnt.Token[][] board\);) s
+18.6 365 M (17:) s
+35.4 365 M
+(        ) s
+18.6 357 M (18:) s
+35.4 357 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 357 M
+(/** Assign the player a token \(e.g. 'X' or 'O'\) */) s
+/F-gs-font 7 7 SF
+18.6 349 M (19:) s
+35.4 349 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 349 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 349 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 349 M
+(void) s
+/F-gs-font 7 7 SF
+115.2 349 M
+( setToken\(VierGewinnt.Token token\);) s
+18.6 341 M (20:) s
+35.4 341 M
+(        ) s
+18.6 333 M (21:) s
+35.4 333 M
+(        ) s
+/Courier-Oblique 7 7 SUF
+69 333 M
+(/** Return the token assigned to the player */) s
+/F-gs-font 7 7 SF
+18.6 325 M (22:) s
+35.4 325 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 325 M
+(public) s
+/F-gs-font 7 7 SF
+94.2 325 M
+( VierGewinnt.Token getToken\(\);) s
+18.6 317 M (23:) s
+35.4 317 M
+(}) s
+_R
+S
+%%Page: (1) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -571 translate
+/pagenum 1 def
+/fname (HumanPlayer.java) def
+/fdir () def
+/ftail (HumanPlayer.java) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (11/24/11) def
+/modtimestr (15:18:49) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+column_lines
+do_header
+22.8 501 M (1:) s
+/Courier-Oblique 7 7 SUF
+35.4 501 M
+(/*) s
+/F-gs-font 7 7 SF
+22.8 493 M (2:) s
+/Courier-Oblique 7 7 SUF
+35.4 493 M
+(Programmierung 1 HS 2011) s
+/F-gs-font 7 7 SF
+22.8 485 M (3:) s
+/Courier-Oblique 7 7 SUF
+35.4 485 M
+(Aufgabe 4-1) s
+/F-gs-font 7 7 SF
+22.8 477 M (4:) s
+/Courier-Oblique 7 7 SUF
+/F-gs-font 7 7 SF
+22.8 469 M (5:) s
+/Courier-Oblique 7 7 SUF
+35.4 469 M
+(Michael Kohler - 11-108-289) s
+/F-gs-font 7 7 SF
+22.8 461 M (6:) s
+/Courier-Oblique 7 7 SUF
+35.4 461 M
+(Lukas Diener - 11-123-213) s
+/F-gs-font 7 7 SF
+22.8 453 M (7:) s
+/Courier-Oblique 7 7 SUF
+35.4 453 M
+( */) s
+/F-gs-font 7 7 SF
+22.8 445 M (8:) s
+22.8 437 M (9:) s
+/Courier-Bold 7 7 SUF
+35.4 437 M
+(import) s
+/F-gs-font 7 7 SF
+60.6 437 M
+( java.util.Scanner;) s
+18.6 429 M (10:) s
+18.6 421 M (11:) s
+/Courier-Oblique 7 7 SUF
+35.4 421 M
+(/** A human player class */) s
+/F-gs-font 7 7 SF
+18.6 413 M (12:) s
+/Courier-Bold 7 7 SUF
+35.4 413 M
+(public) s
+/F-gs-font 7 7 SF
+60.6 413 M
+( ) s
+/Courier-Bold 7 7 SUF
+64.8 413 M
+(class) s
+/F-gs-font 7 7 SF
+85.8 413 M
+( HumanPlayer ) s
+/Courier-Bold 7 7 SUF
+140.4 413 M
+(implements) s
+/F-gs-font 7 7 SF
+182.4 413 M
+( IPlayer {) s
+18.6 405 M (13:) s
+18.6 397 M (14:) s
+35.4 397 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 397 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 397 M
+( Scanner scan = ) s
+/Courier-Bold 7 7 SUF
+148.8 397 M
+(new) s
+/F-gs-font 7 7 SF
+161.4 397 M
+( Scanner\(System.in\);) s
+18.6 389 M (15:) s
+35.4 389 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 389 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 389 M
+( VierGewinnt.Token token;) s
+18.6 381 M (16:) s
+18.6 373 M (17:) s
+35.4 373 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 373 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 373 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 373 M
+(int) s
+/F-gs-font 7 7 SF
+94.2 373 M
+( getNextColumn\(VierGewinnt.Token[][] board\) {) s
+18.6 365 M (18:) s
+35.4 365 M
+(        System.out.println\() s
+/Courier-Bold 7 7 SUF
+148.8 365 M
+("\\n") s
+/F-gs-font 7 7 SF
+165.6 365 M
+( + VierGewinnt.displayBoard\(board\)\);) s
+18.6 357 M (19:) s
+35.4 357 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 357 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 357 M
+( column = -1;) s
+18.6 349 M (20:) s
+35.4 349 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 349 M
+(while) s
+/F-gs-font 7 7 SF
+90 349 M
+( \(column < 0 || column >= board.length\) {) s
+18.6 341 M (21:) s
+35.4 341 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 341 M
+(if) s
+/F-gs-font 7 7 SF
+94.2 341 M
+( \(ComputerPlayer.aboutToWin\) {) s
+18.6 333 M (22:) s
+35.4 333 M
+(                System.out.println\() s
+/Courier-Bold 7 7 SUF
+182.4 333 M
+("CPU is about to win!") s
+/F-gs-font 7 7 SF
+274.8 333 M
+(\);) s
+18.6 325 M (23:) s
+35.4 325 M
+(            }) s
+18.6 317 M (24:) s
+35.4 317 M
+(            System.out.print\() s
+/Courier-Bold 7 7 SUF
+157.2 317 M
+("Player ") s
+/F-gs-font 7 7 SF
+195 317 M
+( + ) s
+/Courier-Bold 7 7 SUF
+207.6 317 M
+(this) s
+/F-gs-font 7 7 SF
+224.4 317 M
+(.token.toString\(\)) s
+18.6 309 M (25:) s
+35.4 309 M
+(                    + ) s
+/Courier-Bold 7 7 SUF
+127.8 309 M
+(" choose a column between 1 and ") s
+/F-gs-font 7 7 SF
+266.4 309 M
+( + board.length + ) s
+/Courier-Bold 7 7 SUF
+342 309 M
+(": ") s
+/F-gs-font 7 7 SF
+358.8 309 M
+(\);) s
+18.6 301 M (26:) s
+35.4 301 M
+(            column = Integer.parseInt\(scan.nextLine\(\)\) - 1;) s
+18.6 293 M (27:) s
+35.4 293 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 293 M
+(if) s
+/F-gs-font 7 7 SF
+94.2 293 M
+( \(column >= 0 && column < board.length\) {) s
+18.6 285 M (28:) s
+35.4 285 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 285 M
+(int) s
+/F-gs-font 7 7 SF
+115.2 285 M
+( topRow = board[0].length - 1;) s
+18.6 277 M (29:) s
+35.4 277 M
+(                ) s
+/Courier-Bold 7 7 SUF
+102.6 277 M
+(if) s
+/F-gs-font 7 7 SF
+111 277 M
+( \(isColFull\(column, board\)\) {) s
+18.6 269 M (30:) s
+35.4 269 M
+(                    System.out.println\() s
+/Courier-Bold 7 7 SUF
+199.2 269 M
+("This column is full!") s
+/F-gs-font 7 7 SF
+291.6 269 M
+(\);) s
+18.6 261 M (31:) s
+35.4 261 M
+(                    column = -1;) s
+18.6 253 M (32:) s
+35.4 253 M
+(                }) s
+18.6 245 M (33:) s
+35.4 245 M
+(            }) s
+18.6 237 M (34:) s
+35.4 237 M
+(        }) s
+18.6 229 M (35:) s
+35.4 229 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 229 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 229 M
+( column;) s
+18.6 221 M (36:) s
+35.4 221 M
+(    }) s
+18.6 213 M (37:) s
+18.6 205 M (38:) s
+35.4 205 M
+(    ) s
+/Courier-Oblique 7 7 SUF
+52.2 205 M
+(/** returns true if the column col is already full and false otherwise. */) s
+/F-gs-font 7 7 SF
+18.6 197 M (39:) s
+35.4 197 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 197 M
+(private) s
+/F-gs-font 7 7 SF
+81.6 197 M
+( ) s
+/Courier-Bold 7 7 SUF
+85.8 197 M
+(boolean) s
+/F-gs-font 7 7 SF
+115.2 197 M
+( isColFull\() s
+/Courier-Bold 7 7 SUF
+161.4 197 M
+(int) s
+/F-gs-font 7 7 SF
+174 197 M
+( col, VierGewinnt.Token[][] board\) {) s
+18.6 189 M (40:) s
+35.4 189 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 189 M
+(int) s
+/F-gs-font 7 7 SF
+81.6 189 M
+( topRow = board[0].length - 1;) s
+18.6 181 M (41:) s
+35.4 181 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 181 M
+(if) s
+/F-gs-font 7 7 SF
+77.4 181 M
+( \(board[col][topRow] != VierGewinnt.Token.empty\) {) s
+18.6 173 M (42:) s
+35.4 173 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 173 M
+(return) s
+/F-gs-font 7 7 SF
+111 173 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 173 M
+(true) s
+/F-gs-font 7 7 SF
+132 173 M
+(;) s
+18.6 165 M (43:) s
+35.4 165 M
+(        } ) s
+/Courier-Bold 7 7 SUF
+77.4 165 M
+(else) s
+/F-gs-font 7 7 SF
+94.2 165 M
+( {) s
+18.6 157 M (44:) s
+35.4 157 M
+(            ) s
+/Courier-Bold 7 7 SUF
+85.8 157 M
+(return) s
+/F-gs-font 7 7 SF
+111 157 M
+( ) s
+/Courier-Bold 7 7 SUF
+115.2 157 M
+(false) s
+/F-gs-font 7 7 SF
+136.2 157 M
+(;) s
+18.6 149 M (45:) s
+35.4 149 M
+(        }) s
+18.6 141 M (46:) s
+35.4 141 M
+(    }) s
+18.6 133 M (47:) s
+18.6 125 M (48:) s
+35.4 125 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 125 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 125 M
+( ) s
+/Courier-Bold 7 7 SUF
+81.6 125 M
+(void) s
+/F-gs-font 7 7 SF
+98.4 125 M
+( setToken\(VierGewinnt.Token token\) {) s
+18.6 117 M (49:) s
+35.4 117 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 117 M
+(this) s
+/F-gs-font 7 7 SF
+85.8 117 M
+(.token = token;) s
+18.6 109 M (50:) s
+35.4 109 M
+(    }) s
+18.6 101 M (51:) s
+18.6 93 M (52:) s
+35.4 93 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 93 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 93 M
+( VierGewinnt.Token getToken\(\) {) s
+18.6 85 M (53:) s
+35.4 85 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 85 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 85 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 85 M
+(this) s
+/F-gs-font 7 7 SF
+115.2 85 M
+(.token;) s
+18.6 77 M (54:) s
+35.4 77 M
+(    }) s
+18.6 69 M (55:) s
+18.6 61 M (56:) s
+35.4 61 M
+(    ) s
+/Courier-Bold 7 7 SUF
+52.2 61 M
+(public) s
+/F-gs-font 7 7 SF
+77.4 61 M
+( String getProgrammers\(\) {) s
+18.6 53 M (57:) s
+35.4 53 M
+(        ) s
+/Courier-Bold 7 7 SUF
+69 53 M
+(return) s
+/F-gs-font 7 7 SF
+94.2 53 M
+( ) s
+/Courier-Bold 7 7 SUF
+98.4 53 M
+("Lukas Diener, Michael Kohler") s
+/F-gs-font 7 7 SF
+224.4 53 M
+(;) s
+18.6 45 M (58:) s
+35.4 45 M
+(    }) s
+18.6 37 M (59:) s
+35.4 37 M
+(}) s
+_R
+S
+%%Trailer
+%%Pages: 7
+%%DocumentNeededResources: font Times-Roman Courier-Oblique Courier-Bold 
+%%+ font Courier Times-Bold 
+%%EOF
