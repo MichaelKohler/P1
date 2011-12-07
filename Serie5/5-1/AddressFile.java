@@ -1,5 +1,5 @@
 /*
- * P1 Aufgabe 5-1 / AddressFileException.java
+ * P1 Aufgabe 5-1 / AddressFile.java
  * Authors:
  *  - Michael Kohler - 11-108-289
  *  - Lukas Diener - 11-123-213
