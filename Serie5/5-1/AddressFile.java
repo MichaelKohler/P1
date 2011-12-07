@@ -4,7 +4,8 @@
  *  - Michael Kohler - 11-108-289
  *  - Lukas Diener - 11-123-213
  */
- 
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -52,26 +53,27 @@ public class AddressFile {
     }
     
     // save to file
+    Writer writer = null;
     try {
-      Writer writer = new OutputStreamWriter(new FileOutputStream(filename));
+      writer = new OutputStreamWriter(new FileOutputStream(filename));
       for (String line : lineAddresses) {
         writer.write(line + "\n");
       }
-    }
-    catch (Exception ex) {
-      throw new AddressFileException("Error while writing!");
-    }
-    finally {
       writer.close();
     }
+    catch (Exception ex) { }
   }
   
-  protected ArrayList<Address> load() throws AddressFileException {
+  protected ArrayList<Address> load() throws AddressFileException,
+                                             FileNotFoundException {
     ArrayList<Address> addrList = new ArrayList<Address>();
     
     // read from file
     ArrayList<String> linesList = new ArrayList<String>();
-    
+    Scanner scanner = new Scanner(new File(filename));
+    while (scanner.hasNextLine()) {
+      linesList.add(scanner.nextLine());
+    }
     
     // process
     for (String line : linesList) {

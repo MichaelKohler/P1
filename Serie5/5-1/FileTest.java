@@ -31,7 +31,7 @@ public class FileTest{
 
 
 		
-		/* ------------ Testing labelled files ------------
+		// ------------ Testing labelled files ------------
 		// save addresses to a labelled file
 		file = new AddressFileLabelled("adr_out.txt");  // note the usage of polymorphism!
 		file.save(list);
@@ -45,6 +45,6 @@ public class FileTest{
 			System.out.println("Loaded the following objects:");
 			for(Address adr : result)	System.out.println(adr);
 			System.out.println("");
-		}catch(AddressFileException e){  System.out.println("\nInvalid file.\n");  }*/
+		}catch(AddressFileException e){  System.out.println("\nInvalid file.\n");  }
 	}
 }
