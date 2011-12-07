@@ -20,7 +20,7 @@ public class AddressFile {
     return addr.toString();
   }
   
-  private Address parseLine(String line) throws AddressFileException {
+  protected Address parseLine(String line) throws AddressFileException {
     String delimiter = ",";
     Scanner scanner = new Scanner(line);
     scanner.useDelimiter(delimiter);
@@ -44,7 +44,7 @@ public class AddressFile {
     return addr; // addr is null if an AddressFileException is thrown
   }
   
-  public void save(ArrayList<Address> addresses) {
+  protected void save(ArrayList<Address> addresses) {
     ArrayList<String> lineAddresses = new ArrayList<String>();
     for (Address address : addresses) {
       String commaseparatedAddress = toLine(address);
@@ -52,11 +52,31 @@ public class AddressFile {
     }
     
     // save to file
-    
+    try {
+      Writer writer = new OutputStreamWriter(new FileOutputStream(filename));
+      for (String line : lineAddresses) {
+        writer.write(line + "\n");
+      }
+    }
+    catch (Exception ex) {
+      throw new AddressFileException("Error while writing!");
+    }
+    finally {
+      writer.close();
+    }
   }
   
-  public ArrayList<Address> load() {
+  protected ArrayList<Address> load() throws AddressFileException {
     ArrayList<Address> addrList = new ArrayList<Address>();
+    
+    // read from file
+    ArrayList<String> linesList = new ArrayList<String>();
+    
+    
+    // process
+    for (String line : linesList) {
+      addrList.add(parseLine(line));
+    }
     
     return addrList; 
   }
