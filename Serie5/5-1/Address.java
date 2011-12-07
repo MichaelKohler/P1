@@ -1,7 +1,9 @@
 /*
- Programmierung 1 HS 2011
- Aufgabe 5-1
-*/
+ * P1 Aufgabe 5-1 / AddressFileException.java
+ * Authors:
+ *  - Michael Kohler - 11-108-289
+ *  - Lukas Diener - 11-123-231
+ */
 
 public class Address{
 	private int id;
