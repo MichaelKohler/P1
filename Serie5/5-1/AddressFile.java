@@ -11,14 +11,15 @@ import java.util.Scanner;
 
 public class AddressFile {
 
-  public String filename = "";
+  public String filename;
   
   AddressFile(String filename) {
     this.filename = filename;
   }
   
-  public String toLine(Address addr) {
-    return addr.toString();
+  protected String toLine(Address addr) {
+	String address = addr.getId()+","+addr.getName().trim()+","+addr.getStreet().trim()+","+addr.getZipCode()+","+addr.getCity().trim();
+    return address;
   }
   
   protected Address parseLine(String line) throws AddressFileException {
@@ -31,7 +32,7 @@ public class AddressFile {
     }
     
     Address addr;
-    if (items.size() == 5) {
+    try{
       int id = Integer.parseInt(items.get(0).trim());
       String name = items.get(1).trim();
       String street = items.get(2).trim();
@@ -39,13 +40,13 @@ public class AddressFile {
       String city = items.get(4).trim();
       addr = new Address(id, name, street, zipCode, city);
     }
-    else {
+    catch(Exception e){
       throw new AddressFileException("The address has an invalid format!");
     }
-    return addr; // addr is null if an AddressFileException is thrown
+    return addr;
   }
   
-  protected void save(ArrayList<Address> addresses) {
+  public void save(ArrayList<Address> addresses) {
     ArrayList<String> lineAddresses = new ArrayList<String>();
     for (Address address : addresses) {
       String commaseparatedAddress = toLine(address);
@@ -64,7 +65,7 @@ public class AddressFile {
     catch (Exception ex) { }
   }
   
-  protected ArrayList<Address> load() throws AddressFileException,
+  public ArrayList<Address> load() throws AddressFileException,
                                              FileNotFoundException {
     ArrayList<Address> addrList = new ArrayList<Address>();
     

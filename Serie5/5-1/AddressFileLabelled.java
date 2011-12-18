@@ -33,9 +33,13 @@ public class AddressFileLabelled extends AddressFile {
     
     Scanner scan = new Scanner(line);
     for (String label : labelArray) {
-      scan.findInLine(label +"[\\ s ]*:[\\ s ]*([^;]*)");
-      String value = scan.match().group(1).trim();
-      vals.add(value);
+	  try{
+		scan.findInLine(label +"[\\ s ]*:[\\ s ]*([^;]*)");
+		String value = scan.match().group(1).trim();
+		vals.add(value);
+	  }catch(Exception e){
+		throw new AddressFileException("The address has an invalid format!");
+	  }
     }
     
     Address addr = new Address(Integer.parseInt(vals.get(0)), vals.get(1),
